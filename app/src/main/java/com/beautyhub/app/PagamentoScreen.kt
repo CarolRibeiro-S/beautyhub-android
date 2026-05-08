@@ -1,0 +1,332 @@
+package com.beautyhub.app
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.beautyhub.app.ui.theme.*
+
+@Composable
+fun PagamentoScreen(
+    onPagarClick: () -> Unit = {},
+    onVoltarClick: () -> Unit = {}
+) {
+    var metodoPagamento by remember { mutableStateOf("") }
+    var numeroCartao by remember { mutableStateOf("") }
+    var validade by remember { mutableStateOf("") }
+    var cvv by remember { mutableStateOf("") }
+    var chavePix by remember { mutableStateOf("") }
+    var pagamentoConfirmado by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BrancoQuente)
+    ) {
+        // Header
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(220.dp)
+                .shadow(
+                    elevation = 16.dp,
+                    shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
+                )
+                .background(
+                    color = MarromEscuro,
+                    shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
+                ),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Text(
+                text = "Pagamento",
+                color = BrancoQuente,
+                fontFamily = FrauncesFontFamily,
+                fontSize = 24.sp,
+                modifier = Modifier.padding(top = 60.dp)
+            )
+        }
+
+        // Logo
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = 123.dp)
+                .size(150.dp)
+                .clip(RoundedCornerShape(75.dp))
+                .background(MarromEscuro)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo_beautyhub),
+                contentDescription = "Logo BeautyHub",
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
+        // Conteúdo
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 290.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (pagamentoConfirmado) {
+                // Tela de sucesso
+                Spacer(modifier = Modifier.height(32.dp))
+                Text(
+                    text = "✅ Pagamento Confirmado!",
+                    color = MarromEscuro,
+                    fontFamily = FrauncesFontFamily,
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Seu agendamento está confirmado.\nAté logo! 💆‍♀️",
+                    color = MarromMedio,
+                    fontFamily = FrauncesFontFamily,
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                Button(
+                    onClick = onPagarClick,
+                    modifier = Modifier
+                        .padding(horizontal = 32.dp)
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MarromEscuro),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "IR PARA MEUS AGENDAMENTOS",
+                        color = BrancoQuente,
+                        fontFamily = FrauncesFontFamily,
+                        fontSize = 13.sp
+                    )
+                }
+            } else {
+                // Resumo do agendamento
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 32.dp)
+                        .fillMaxWidth()
+                        .background(BegeClaro, RoundedCornerShape(12.dp))
+                        .padding(16.dp)
+                ) {
+                    Column {
+                        Text(
+                            text = "Resumo do Agendamento",
+                            color = MarromEscuro,
+                            fontFamily = FrauncesFontFamily,
+                            fontSize = 16.sp
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Serviço: Hidratação capilar", color = MarromMedio, fontSize = 13.sp)
+                        Text("Profissional: Ana Souza", color = MarromMedio, fontSize = 13.sp)
+                        Text("Data: Sex, 24/04 às 13:00", color = MarromMedio, fontSize = 13.sp)
+                        Text("Duração: 60 min", color = MarromMedio, fontSize = 13.sp)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Total: R$ 120,00",
+                            color = MarromEscuro,
+                            fontFamily = FrauncesFontFamily,
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    text = "Escolha a forma de pagamento:",
+                    color = MarromEscuro,
+                    fontFamily = FrauncesFontFamily,
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp)
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Métodos de pagamento
+                listOf("Cartão de Crédito", "Cartão de Débito", "PIX").forEach { metodo ->
+                    val selecionado = metodoPagamento == metodo
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp, vertical = 4.dp)
+                            .fillMaxWidth()
+                            .background(
+                                color = if (selecionado) MarromEscuro else BegeClaro,
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .clickable { metodoPagamento = metodo }
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = selecionado,
+                            onClick = { metodoPagamento = metodo },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = Dourado,
+                                unselectedColor = MarromMedio
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = metodo,
+                            color = if (selecionado) BrancoQuente else MarromEscuro,
+                            fontFamily = FrauncesFontFamily,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Campos dinâmicos por método
+                if (metodoPagamento == "Cartão de Crédito" || metodoPagamento == "Cartão de Débito") {
+                    Column(modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth()) {
+                        Text("NÚMERO DO CARTÃO:", color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        OutlinedTextField(
+                            value = numeroCartao,
+                            onValueChange = { numeroCartao = it },
+                            placeholder = { Text("0000 0000 0000 0000", color = BegeMedio) },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MarromEscuro,
+                                unfocusedBorderColor = BegeMedio,
+                                focusedContainerColor = BegeClaro,
+                                unfocusedContainerColor = BegeClaro
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text("VALIDADE:", color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
+                                Spacer(modifier = Modifier.height(4.dp))
+                                OutlinedTextField(
+                                    value = validade,
+                                    onValueChange = { validade = it },
+                                    placeholder = { Text("MM/AA", color = BegeMedio) },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = MarromEscuro,
+                                        unfocusedBorderColor = BegeMedio,
+                                        focusedContainerColor = BegeClaro,
+                                        unfocusedContainerColor = BegeClaro
+                                    ),
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                            }
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text("CVV:", color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
+                                Spacer(modifier = Modifier.height(4.dp))
+                                OutlinedTextField(
+                                    value = cvv,
+                                    onValueChange = { cvv = it },
+                                    placeholder = { Text("123", color = BegeMedio) },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = MarromEscuro,
+                                        unfocusedBorderColor = BegeMedio,
+                                        focusedContainerColor = BegeClaro,
+                                        unfocusedContainerColor = BegeClaro
+                                    ),
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+
+                if (metodoPagamento == "PIX") {
+                    Column(
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp)
+                            .fillMaxWidth()
+                            .background(BegeClaro, RoundedCornerShape(12.dp))
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Chave PIX:",
+                            color = MarromEscuro,
+                            fontFamily = FrauncesFontFamily,
+                            fontSize = 14.sp
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "beautyhub@pagamento.com",
+                            color = Dourado,
+                            fontFamily = FrauncesFontFamily,
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Após realizar o PIX, clique em confirmar.",
+                            color = MarromMedio,
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                // Botão pagar
+                Button(
+                    onClick = { if (metodoPagamento.isNotEmpty()) pagamentoConfirmado = true },
+                    modifier = Modifier
+                        .padding(horizontal = 32.dp)
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (metodoPagamento.isNotEmpty()) MarromEscuro else BegeMedio
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "CONFIRMAR PAGAMENTO",
+                        color = BrancoQuente,
+                        fontFamily = FrauncesFontFamily,
+                        fontSize = 14.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                TextButton(onClick = onVoltarClick) {
+                    Text(
+                        text = "Voltar",
+                        color = MarromMedio,
+                        fontFamily = FrauncesFontFamily,
+                        fontSize = 13.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+            }
+        }
+    }
+}
