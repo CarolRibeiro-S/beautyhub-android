@@ -20,9 +20,53 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beautyhub.app.ui.theme.*
 
+val servicosPorCategoria = mapOf(
+    "Cabelo" to listOf(
+        ServicoApi(1, "Hidratação capilar", "Tratamento nutritivo para fios ressecados", 60, 120.0, null),
+        ServicoApi(2, "Corte de cabelo", "Corte moderno e personalizado", 45, 80.0, null),
+        ServicoApi(3, "Coloração", "Coloração completa com tinta profissional", 120, 200.0, null),
+        ServicoApi(4, "Escova progressiva", "Alisamento duradouro", 180, 350.0, null)
+    ),
+    "Unhas" to listOf(
+        ServicoApi(5, "Manicure", "Cuidado completo para suas unhas", 45, 60.0, null),
+        ServicoApi(6, "Pedicure", "Cuidado completo para os pés", 60, 70.0, null),
+        ServicoApi(7, "Gel nas unhas", "Unhas em gel duradouras", 90, 150.0, null),
+        ServicoApi(8, "Nail art", "Decoração artística nas unhas", 60, 100.0, null)
+    ),
+    "Estetica" to listOf(
+        ServicoApi(9, "Limpeza de pele", "Limpeza profunda e revitalizante", 90, 150.0, null),
+        ServicoApi(10, "Peeling facial", "Renovação celular da pele", 60, 180.0, null),
+        ServicoApi(11, "Drenagem linfática", "Redução de inchaço e toxinas", 60, 200.0, null),
+        ServicoApi(12, "Design de sobrancelha", "Modelagem perfeita das sobrancelhas", 30, 50.0, null)
+    ),
+    "Massagem" to listOf(
+        ServicoApi(13, "Massagem relaxante", "Massagem corporal completa", 60, 180.0, null),
+        ServicoApi(14, "Massagem desportiva", "Alívio de tensões musculares", 60, 200.0, null),
+        ServicoApi(15, "Massagem pedras quentes", "Relaxamento profundo com pedras", 90, 250.0, null),
+        ServicoApi(16, "Reflexologia", "Massagem nos pés para equilíbrio do corpo", 45, 150.0, null)
+    ),
+    "Maquiagem" to listOf(
+        ServicoApi(17, "Maquiagem social", "Make completa para eventos", 60, 150.0, null),
+        ServicoApi(18, "Maquiagem noiva", "Make especial para noivas", 120, 400.0, null),
+        ServicoApi(19, "Maquiagem artística", "Make criativa e temática", 90, 250.0, null)
+    )
+)
+
+fun getServicosPorSalao(categorias: String): List<ServicoApi> {
+    val resultado = mutableListOf<ServicoApi>()
+    servicosPorCategoria.forEach { (categoria, servicos) ->
+        if (categorias.contains(categoria, ignoreCase = true)) {
+            resultado.addAll(servicos)
+        }
+    }
+    return if (resultado.isEmpty()) servicosPorCategoria.values.flatten() else resultado
+}
+
 @Composable
 fun HomeScreen(
     nomeUsuario: String = "Sara",
+    nomeSalao: String = "",
+    categoriasSalao: String = "",
     onAvancarClick: () -> Unit = {},
     onMeusAgendamentosClick: () -> Unit = {},
     onCartaoFidelidadeClick: () -> Unit = {},
@@ -30,13 +74,8 @@ fun HomeScreen(
     onSobreNosClick: () -> Unit = {},
     onSairClick: () -> Unit = {}
 ) {
-    val servicosApi = remember {
-        listOf(
-            ServicoApi(1, "Hidratação capilar", "Tratamento nutritivo para fios ressecados", 60, 120.0, null),
-            ServicoApi(2, "Manicure", "Cuidado completo para suas unhas", 45, 60.0, null),
-            ServicoApi(3, "Limpeza de pele", "Limpeza profunda e revitalizante", 90, 150.0, null),
-            ServicoApi(4, "Massagem relaxante", "Massagem corporal completa", 60, 180.0, null)
-        )
+    val servicosApi = remember(categoriasSalao) {
+        getServicosPorSalao(categoriasSalao)
     }
     var servicoSelecionado by remember { mutableStateOf<ServicoApi?>(null) }
     var menuAberto by remember { mutableStateOf(false) }
@@ -46,7 +85,6 @@ fun HomeScreen(
             .fillMaxSize()
             .background(BrancoQuente)
     ) {
-        // Header marrom
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -66,22 +104,24 @@ fun HomeScreen(
                 modifier = Modifier.padding(top = 48.dp)
             ) {
                 Text(
-                    text = "Escolha um serviço para",
+                    text = if (nomeSalao.isNotEmpty()) "Serviços do $nomeSalao" else "Escolha um serviço para",
                     color = BrancoQuente,
                     fontFamily = FrauncesFontFamily,
                     fontSize = 18.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 32.dp)
                 )
-                Text(
-                    text = "agendar seu horário na",
-                    color = BrancoQuente,
-                    fontFamily = FrauncesFontFamily,
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center
-                )
+                if (nomeSalao.isEmpty()) {
+                    Text(
+                        text = "agendar seu horário na",
+                        color = BrancoQuente,
+                        fontFamily = FrauncesFontFamily,
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
 
-            // Botão menu hamburguer
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -102,85 +142,33 @@ fun HomeScreen(
                     modifier = Modifier.background(BrancoQuente)
                 ) {
                     DropdownMenuItem(
-                        text = {
-                            Text(
-                                "Meus Agendamentos",
-                                color = MarromEscuro,
-                                fontFamily = FrauncesFontFamily,
-                                fontSize = 14.sp
-                            )
-                        },
-                        onClick = {
-                            menuAberto = false
-                            onMeusAgendamentosClick()
-                        }
+                        text = { Text("Meus Agendamentos", color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
+                        onClick = { menuAberto = false; onMeusAgendamentosClick() }
                     )
                     HorizontalDivider(color = BegeMedio)
                     DropdownMenuItem(
-                        text = {
-                            Text(
-                                "Cartão Fidelidade",
-                                color = Dourado,
-                                fontFamily = FrauncesFontFamily,
-                                fontSize = 14.sp
-                            )
-                        },
-                        onClick = {
-                            menuAberto = false
-                            onCartaoFidelidadeClick()
-                        }
+                        text = { Text("Cartão Fidelidade", color = Dourado, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
+                        onClick = { menuAberto = false; onCartaoFidelidadeClick() }
                     )
                     HorizontalDivider(color = BegeMedio)
                     DropdownMenuItem(
-                        text = {
-                            Text(
-                                "Buscar Serviços",
-                                color = MarromEscuro,
-                                fontFamily = FrauncesFontFamily,
-                                fontSize = 14.sp
-                            )
-                        },
-                        onClick = {
-                            menuAberto = false
-                            onBuscaClick()
-                        }
+                        text = { Text("Buscar Serviços", color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
+                        onClick = { menuAberto = false; onBuscaClick() }
                     )
                     HorizontalDivider(color = BegeMedio)
                     DropdownMenuItem(
-                        text = {
-                            Text(
-                                "Sobre Nós",
-                                color = MarromEscuro,
-                                fontFamily = FrauncesFontFamily,
-                                fontSize = 14.sp
-                            )
-                        },
-                        onClick = {
-                            menuAberto = false
-                            onSobreNosClick()
-                        }
+                        text = { Text("Sobre Nós", color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
+                        onClick = { menuAberto = false; onSobreNosClick() }
                     )
                     HorizontalDivider(color = BegeMedio)
                     DropdownMenuItem(
-                        text = {
-                            Text(
-                                "Sair",
-                                color = Vermelho,
-                                fontFamily = FrauncesFontFamily,
-                                fontSize = 14.sp
-                            )
-                        },
-                        onClick = {
-                            menuAberto = false
-                            SessionManager.logout()
-                            onSairClick()
-                        }
+                        text = { Text("Sair", color = Vermelho, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
+                        onClick = { menuAberto = false; SessionManager.logout(); onSairClick() }
                     )
                 }
             }
         }
 
-        // Logo
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -196,7 +184,6 @@ fun HomeScreen(
             )
         }
 
-        // Conteudo
         Column(
             modifier = Modifier
                 .fillMaxSize()

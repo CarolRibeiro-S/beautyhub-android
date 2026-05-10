@@ -17,6 +17,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beautyhub.app.ui.theme.*
 
+fun emailValido(email: String): Boolean {
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+}
+
 @Composable
 fun LoginScreen(
     onLoginClick: () -> Unit = {},
@@ -93,15 +97,25 @@ fun LoginScreen(
                     value = email,
                     onValueChange = { email = it },
                     placeholder = { Text("seuemail@...", color = BegeMedio) },
+                    isError = email.isNotEmpty() && !emailValido(email),
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MarromEscuro,
                         unfocusedBorderColor = BegeMedio,
+                        errorBorderColor = Vermelho,
                         focusedContainerColor = BegeClaro,
                         unfocusedContainerColor = BegeClaro
                     ),
                     shape = RoundedCornerShape(8.dp)
                 )
+                if (email.isNotEmpty() && !emailValido(email)) {
+                    Text(
+                        text = "Digite um e-mail válido",
+                        color = Vermelho,
+                        fontSize = 11.sp,
+                        modifier = Modifier.padding(start = 4.dp, top = 2.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -113,15 +127,25 @@ fun LoginScreen(
                     value = senha,
                     onValueChange = { senha = it },
                     visualTransformation = PasswordVisualTransformation(),
+                    isError = senha.isNotEmpty() && senha.length < 6,
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MarromEscuro,
                         unfocusedBorderColor = BegeMedio,
+                        errorBorderColor = Vermelho,
                         focusedContainerColor = BegeClaro,
                         unfocusedContainerColor = BegeClaro
                     ),
                     shape = RoundedCornerShape(8.dp)
                 )
+                if (senha.isNotEmpty() && senha.length < 6) {
+                    Text(
+                        text = "A senha deve ter pelo menos 6 caracteres",
+                        color = Vermelho,
+                        fontSize = 11.sp,
+                        modifier = Modifier.padding(start = 4.dp, top = 2.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -150,11 +174,15 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    if (email.isEmpty() || senha.isEmpty()) {
-                        erro = "Preencha todos os campos!"
-                        return@Button
+                    when {
+                        email.isEmpty() || senha.isEmpty() -> erro = "Preencha todos os campos!"
+                        !emailValido(email) -> erro = "Digite um e-mail válido!"
+                        senha.length < 6 -> erro = "A senha deve ter pelo menos 6 caracteres!"
+                        else -> {
+                            SessionManager.saveEmail(email)
+                            onLoginClick()
+                        }
                     }
-                    onLoginClick()
                 },
                 modifier = Modifier
                     .padding(horizontal = 32.dp)

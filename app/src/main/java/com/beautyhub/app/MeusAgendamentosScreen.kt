@@ -18,15 +18,74 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beautyhub.app.ui.theme.*
 
+data class AgendamentoItem(
+    val servico: String,
+    val profissional: String,
+    val data: String,
+    val horario: String,
+    var status: String
+)
+
 @Composable
 fun MeusAgendamentosScreen(
-    onVoltarClick: () -> Unit = {}
+    onVoltarClick: () -> Unit = {},
+    onReagendarClick: () -> Unit = {}
 ) {
-    val agendamentos = listOf(
-        Agendamento("Hidratação capilar", "Ana Souza", "21/02", "14:00", "Confirmado"),
-        Agendamento("Hidratação capilar", "Ana Souza", "17/02", "17:00", "Concluído"),
-        Agendamento("Hidratação capilar", "Ana Souza", "05/02", "09:00", "Concluído")
-    )
+    var agendamentos by remember {
+        mutableStateOf(
+            listOf(
+                AgendamentoItem("Hidratação capilar", "Ana Souza", "21/02", "14:00", "Confirmado"),
+                AgendamentoItem("Manicure", "Ana Souza", "17/02", "17:00", "Concluído"),
+                AgendamentoItem("Limpeza de pele", "Ana Souza", "05/02", "09:00", "Concluído")
+            )
+        )
+    }
+
+    var mostrarDialogCancelar by remember { mutableStateOf<AgendamentoItem?>(null) }
+    var mostrarSnackbar by remember { mutableStateOf("") }
+
+    // Dialog de confirmação de cancelamento
+    mostrarDialogCancelar?.let { agendamento ->
+        AlertDialog(
+            onDismissRequest = { mostrarDialogCancelar = null },
+            containerColor = BrancoQuente,
+            title = {
+                Text(
+                    "Cancelar agendamento",
+                    color = MarromEscuro,
+                    fontFamily = FrauncesFontFamily,
+                    fontSize = 16.sp
+                )
+            },
+            text = {
+                Text(
+                    "Deseja cancelar ${agendamento.servico} do dia ${agendamento.data} às ${agendamento.horario}?",
+                    color = MarromMedio,
+                    fontSize = 13.sp
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        agendamentos = agendamentos.map {
+                            if (it == agendamento) it.copy(status = "Cancelado") else it
+                        }
+                        mostrarDialogCancelar = null
+                        mostrarSnackbar = "Agendamento cancelado!"
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Vermelho),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text("Cancelar", color = BrancoQuente, fontSize = 13.sp)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { mostrarDialogCancelar = null }) {
+                    Text("Voltar", color = MarromMedio, fontSize = 13.sp)
+                }
+            }
+        )
+    }
 
     Box(
         modifier = Modifier
@@ -79,6 +138,25 @@ fun MeusAgendamentosScreen(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            if (mostrarSnackbar.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 32.dp)
+                        .fillMaxWidth()
+                        .background(MarromMedio, RoundedCornerShape(8.dp))
+                        .padding(12.dp)
+                ) {
+                    Text(
+                        text = mostrarSnackbar,
+                        color = BrancoQuente,
+                        fontSize = 13.sp,
+                        fontFamily = FrauncesFontFamily
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
             Text(
                 text = "Veja seus horários marcados e passados",
                 color = Dourado,
@@ -91,7 +169,74 @@ fun MeusAgendamentosScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             agendamentos.forEach { agendamento ->
-                AgendamentoCard(agendamento = agendamento)
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 32.dp)
+                        .fillMaxWidth()
+                        .background(MarromEscuro, RoundedCornerShape(12.dp))
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = agendamento.servico,
+                        color = BrancoQuente,
+                        fontFamily = FrauncesFontFamily,
+                        fontSize = 15.sp
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Com ${agendamento.profissional}",
+                        color = BegeMedio,
+                        fontSize = 12.sp
+                    )
+                    Text(
+                        text = "${agendamento.data} - ${agendamento.horario}",
+                        color = BegeMedio,
+                        fontSize = 12.sp
+                    )
+                    Text(
+                        text = agendamento.status,
+                        color = when (agendamento.status) {
+                            "Confirmado" -> Dourado
+                            "Cancelado" -> Vermelho
+                            else -> BegeMedio
+                        },
+                        fontFamily = FrauncesFontFamily,
+                        fontSize = 12.sp
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (agendamento.status == "Confirmado") {
+                            Button(
+                                onClick = { mostrarDialogCancelar = agendamento },
+                                modifier = Modifier.height(32.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = Vermelho),
+                                shape = RoundedCornerShape(8.dp),
+                                contentPadding = PaddingValues(horizontal = 16.dp)
+                            ) {
+                                Text("CANCELAR", color = BrancoQuente, fontSize = 11.sp)
+                            }
+                        }
+
+                        if (agendamento.status == "Concluído" || agendamento.status == "Cancelado") {
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Button(
+                                onClick = { onReagendarClick() },
+                                modifier = Modifier.height(32.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = MarromMedio),
+                                shape = RoundedCornerShape(8.dp),
+                                contentPadding = PaddingValues(horizontal = 16.dp)
+                            ) {
+                                Text("REAGENDAR", color = BrancoQuente, fontSize = 11.sp)
+                            }
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.height(12.dp))
             }
 

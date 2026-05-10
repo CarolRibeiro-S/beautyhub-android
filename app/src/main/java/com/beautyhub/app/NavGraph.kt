@@ -9,7 +9,6 @@ import androidx.navigation.compose.rememberNavController
 sealed class Screen(val route: String) {
     object Login : Screen("login")
     object Cadastro : Screen("cadastro")
-    object Home : Screen("home")
     object Agendamento : Screen("agendamento")
     object MeusAgendamentos : Screen("meus_agendamentos")
     object Pagamento : Screen("pagamento")
@@ -26,18 +25,31 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
     ) {
         composable(Screen.Login.route) {
             LoginScreen(
-                onLoginClick = { navController.navigate(Screen.Home.route) },
+                onLoginClick = { navController.navigate(Screen.Busca.route) },
                 onCadastroClick = { navController.navigate(Screen.Cadastro.route) }
             )
         }
         composable(Screen.Cadastro.route) {
             CadastroScreen(
-                onCadastroClick = { navController.navigate(Screen.Home.route) },
+                onCadastroClick = { navController.navigate(Screen.Busca.route) },
                 onVoltarClick = { navController.popBackStack() }
             )
         }
-        composable(Screen.Home.route) {
+        composable(Screen.Busca.route) {
+            BuscaScreen(
+                onAvancarClick = { nome, categorias ->
+                    navController.navigate("home/$nome/$categorias")
+                },
+                onVoltarClick = { navController.popBackStack() }
+            )
+        }
+        composable("home/{nomeSalao}/{categoriasSalao}") { backStackEntry ->
+            val email = SessionManager.getEmail() ?: ""
+            val nomeUsuario = email.substringBefore("@").replaceFirstChar { it.uppercase() }
             HomeScreen(
+                nomeUsuario = nomeUsuario,
+                nomeSalao = backStackEntry.arguments?.getString("nomeSalao") ?: "",
+                categoriasSalao = backStackEntry.arguments?.getString("categoriasSalao") ?: "",
                 onAvancarClick = { navController.navigate(Screen.Agendamento.route) },
                 onMeusAgendamentosClick = { navController.navigate(Screen.MeusAgendamentos.route) },
                 onCartaoFidelidadeClick = { navController.navigate(Screen.CartaoFidelidade.route) },
@@ -58,17 +70,13 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable(Screen.MeusAgendamentos.route) {
             MeusAgendamentosScreen(
-                onVoltarClick = { navController.popBackStack() }
+                onVoltarClick = { navController.popBackStack() },
+                onReagendarClick = { navController.navigate(Screen.Busca.route) }
             )
         }
         composable(Screen.Pagamento.route) {
             PagamentoScreen(
                 onPagarClick = { navController.navigate(Screen.MeusAgendamentos.route) },
-                onVoltarClick = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.Busca.route) {
-            BuscaScreen(
                 onVoltarClick = { navController.popBackStack() }
             )
         }

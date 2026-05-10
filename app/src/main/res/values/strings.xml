@@ -1,3 +1,33 @@
 <resources>
     <string name="app_name">BeautyHub</string>
+    <string name="bem_vinda">Bem-vinda ao</string>
+    <string name="faca_login">Faça login para agendar seu momento de cuidado</string>
+    <string name="email">E-MAIL:</string>
+    <string name="senha">SENHA:</string>
+    <string name="esqueci_senha">esqueci a senha</string>
+    <string name="entrar">ENTRAR</string>
+    <string name="nao_tem_conta">Não tem conta? Cadastre-se</string>
+    <string name="crie_conta">Crie sua conta na</string>
+    <string name="preencha_dados">Preencha seus dados para começar a agendar.</string>
+    <string name="nome_completo">NOME COMPLETO:</string>
+    <string name="telefone">TELEFONE (WHATSAPP):</string>
+    <string name="data_nascimento">DATA DE NASCIMENTO:</string>
+    <string name="cadastrar">CADASTRAR</string>
+    <string name="ja_tem_conta">Já tem conta? Faça login</string>
+    <string name="buscar_estabelecimento">Buscar Estabelecimento</string>
+    <string name="estabelecimentos_proximos">Estabelecimentos Próximos</string>
+    <string name="localidade">Localidade:</string>
+    <string name="categoria">Categoria:</string>
+    <string name="avancar">Avançar</string>
+    <string name="limpar">Limpar</string>
+    <string name="voltar">Voltar</string>
+    <string name="meus_agendamentos">Meus Agendamentos</string>
+    <string name="cancelar">CANCELAR</string>
+    <string name="reagendar">REAGENDAR</string>
+    <string name="confirmar_agendamento">CONFIRMAR AGENDAMENTO</string>
+    <string name="pagamento">Pagamento</string>
+    <string name="confirmar_pagamento">CONFIRMAR PAGAMENTO</string>
+    <string name="sobre_nos">Sobre Nós</string>
+    <string name="cartao_fidelidade">Cartão Fidelidade</string>
+    <string name="sair">Sair</string>
 </resources>
