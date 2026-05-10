@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BeautyHub</string>
+    <string name="bem_vinda">Welcome to</string>
+    <string name="faca_login">Login to schedule your care moment</string>
+    <string name="email_label">E-MAIL:</string>
+    <string name="senha_label">PASSWORD:</string>
+    <string name="esqueci_senha">forgot password</string>
+    <string name="entrar">LOGIN</string>
+    <string name="nao_tem_conta">No account? Sign up</string>
+    <string name="crie_conta">Create your account at</string>
+    <string name="preencha_dados">Fill in your details to start booking.</string>
+    <string name="nome_completo">FULL NAME:</string>
+    <string name="telefone">PHONE (WHATSAPP):</string>
+    <string name="data_nascimento">DATE OF BIRTH:</string>
+    <string name="cadastrar">SIGN UP</string>
+    <string name="ja_tem_conta">Already have an account? Login</string>
+    <string name="buscar_estabelecimento">Search Establishment</string>
+    <string name="estabelecimentos_proximos">Nearby Establishments</string>
+    <string name="localidade">Location:</string>
+    <string name="categoria">Category:</string>
+    <string name="avancar">Next</string>
+    <string name="limpar">Clear</string>
+    <string name="voltar">Back</string>
+    <string name="meus_agendamentos">My Appointments</string>
+    <string name="cancelar">CANCEL</string>
+    <string name="reagendar">RESCHEDULE</string>
+    <string name="confirmar_agendamento">CONFIRM APPOINTMENT</string>
+    <string name="pagamento">Payment</string>
+    <string name="confirmar_pagamento">CONFIRM PAYMENT</string>
+    <string name="sobre_nos">About Us</string>
+    <string name="cartao_fidelidade">Loyalty Card</string>
+    <string name="sair">Logout</string>
+    <string name="bem_vindo">Welcome,</string>
+    <string name="nenhum_resultado">No results found</string>
+    <string name="dia_horario">Available Day and Time:</string>
+    <string name="escolha_servico">Choose a service to</string>
+    <string name="agendar_horario">schedule your time at</string>
+</resources>

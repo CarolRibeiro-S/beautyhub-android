@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -81,7 +82,7 @@ fun BuscaScreen(
             contentAlignment = Alignment.TopCenter
         ) {
             Text(
-                text = "Buscar Estabelecimento",
+                text = stringResource(R.string.buscar_estabelecimento),
                 color = BrancoQuente,
                 fontFamily = FrauncesFontFamily,
                 fontSize = 20.sp,
@@ -112,7 +113,7 @@ fun BuscaScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Bem-vindo, $nomeUsuario!",
+                text = "${stringResource(R.string.bem_vindo)} $nomeUsuario!",
                 color = Dourado,
                 fontFamily = FrauncesFontFamily,
                 fontSize = 18.sp
@@ -123,7 +124,7 @@ fun BuscaScreen(
             OutlinedTextField(
                 value = busca,
                 onValueChange = { busca = it },
-                placeholder = { Text("Buscar estabelecimento ou serviço...", color = BegeMedio, fontSize = 13.sp) },
+                placeholder = { Text(stringResource(R.string.buscar_estabelecimento), color = BegeMedio, fontSize = 13.sp) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp),
@@ -140,7 +141,7 @@ fun BuscaScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "Localidade:",
+                text = stringResource(R.string.localidade),
                 color = MarromEscuro,
                 fontFamily = FrauncesFontFamily,
                 fontSize = 13.sp,
@@ -180,7 +181,7 @@ fun BuscaScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "Categoria:",
+                text = stringResource(R.string.categoria),
                 color = MarromEscuro,
                 fontFamily = FrauncesFontFamily,
                 fontSize = 13.sp,
@@ -220,7 +221,7 @@ fun BuscaScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Estabelecimentos Próximos",
+                text = stringResource(R.string.estabelecimentos_proximos),
                 color = MarromEscuro,
                 fontFamily = FrauncesFontFamily,
                 fontSize = 14.sp,
@@ -232,7 +233,7 @@ fun BuscaScreen(
             if (saloesFiltrados.isEmpty()) {
                 Spacer(modifier = Modifier.height(32.dp))
                 Text(
-                    text = "Nenhum resultado encontrado",
+                    text = stringResource(R.string.nenhum_resultado),
                     color = MarromMedio,
                     fontSize = 13.sp,
                     textAlign = TextAlign.Center
@@ -267,7 +268,7 @@ fun BuscaScreen(
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MarromEscuro)
                 ) {
-                    Text("Limpar", fontFamily = FrauncesFontFamily, fontSize = 13.sp)
+                    Text(stringResource(R.string.limpar), fontFamily = FrauncesFontFamily, fontSize = 13.sp)
                 }
                 Button(
                     onClick = {
@@ -284,14 +285,14 @@ fun BuscaScreen(
                     ),
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text("Avançar", color = BrancoQuente, fontFamily = FrauncesFontFamily, fontSize = 13.sp)
+                    Text(stringResource(R.string.avancar), color = BrancoQuente, fontFamily = FrauncesFontFamily, fontSize = 13.sp)
                 }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
             TextButton(onClick = onVoltarClick) {
-                Text("Voltar", color = MarromMedio, fontFamily = FrauncesFontFamily, fontSize = 13.sp)
+                Text(stringResource(R.string.voltar), color = MarromMedio, fontFamily = FrauncesFontFamily, fontSize = 13.sp)
             }
 
             Spacer(modifier = Modifier.height(32.dp))

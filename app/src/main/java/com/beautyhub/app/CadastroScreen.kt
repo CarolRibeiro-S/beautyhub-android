@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -60,7 +61,7 @@ fun CadastroScreen(
             contentAlignment = Alignment.TopCenter
         ) {
             Text(
-                text = "Crie sua conta na",
+                text = stringResource(R.string.crie_conta),
                 color = BrancoQuente,
                 fontFamily = FrauncesFontFamily,
                 fontSize = 22.sp,
@@ -91,7 +92,7 @@ fun CadastroScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Preencha seus dados para começar a agendar.",
+                text = stringResource(R.string.preencha_dados),
                 color = MarromMedio,
                 fontFamily = FrauncesFontFamily,
                 fontSize = 13.sp,
@@ -101,9 +102,8 @@ fun CadastroScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Nome
             Column(modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth()) {
-                Text("NOME COMPLETO:", color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
+                Text(stringResource(R.string.nome_completo), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
                 Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = nome,
@@ -127,9 +127,8 @@ fun CadastroScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Telefone
             Column(modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth()) {
-                Text("TELEFONE (WHATSAPP):", color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
+                Text(stringResource(R.string.telefone), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
                 Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = telefone,
@@ -154,9 +153,8 @@ fun CadastroScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Email
             Column(modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth()) {
-                Text("E-MAIL:", color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
+                Text(stringResource(R.string.email_label), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
                 Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = email,
@@ -181,9 +179,8 @@ fun CadastroScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Senha
             Column(modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth()) {
-                Text("SENHA:", color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
+                Text(stringResource(R.string.senha_label), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
                 Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = senha,
@@ -208,9 +205,8 @@ fun CadastroScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Data de nascimento
             Column(modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth()) {
-                Text("DATA DE NASCIMENTO:", color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
+                Text(stringResource(R.string.data_nascimento), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
                 Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = dataNascimento,
@@ -272,7 +268,7 @@ fun CadastroScreen(
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    text = "CADASTRAR",
+                    text = stringResource(R.string.cadastrar),
                     color = BrancoQuente,
                     fontFamily = FrauncesFontFamily,
                     fontSize = 16.sp
@@ -283,7 +279,7 @@ fun CadastroScreen(
 
             TextButton(onClick = onVoltarClick) {
                 Text(
-                    text = "Já tem conta? Faça login",
+                    text = stringResource(R.string.ja_tem_conta),
                     color = MarromMedio,
                     fontFamily = FrauncesFontFamily,
                     fontSize = 13.sp

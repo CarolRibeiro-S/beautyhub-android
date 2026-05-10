@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -50,7 +51,7 @@ fun LoginScreen(
             contentAlignment = Alignment.TopCenter
         ) {
             Text(
-                text = "Bem-vinda ao",
+                text = stringResource(R.string.bem_vinda),
                 color = BrancoQuente,
                 fontFamily = FrauncesFontFamily,
                 fontSize = 22.sp,
@@ -80,7 +81,7 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Faça login para agendar seu momento de cuidado",
+                text = stringResource(R.string.faca_login),
                 color = MarromMedio,
                 fontFamily = FrauncesFontFamily,
                 fontSize = 13.sp,
@@ -91,7 +92,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Column(modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth()) {
-                Text("E-MAIL:", color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
+                Text(stringResource(R.string.email_label), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
                 Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = email,
@@ -121,7 +122,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Column(modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth()) {
-                Text("SENHA:", color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
+                Text(stringResource(R.string.senha_label), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
                 Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = senha,
@@ -151,7 +152,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "esqueci a senha",
+                text = stringResource(R.string.esqueci_senha),
                 color = MarromMedio,
                 fontSize = 12.sp,
                 modifier = Modifier
@@ -192,7 +193,7 @@ fun LoginScreen(
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    text = "ENTRAR",
+                    text = stringResource(R.string.entrar),
                     color = BrancoQuente,
                     fontFamily = FrauncesFontFamily,
                     fontSize = 16.sp
@@ -203,7 +204,7 @@ fun LoginScreen(
 
             TextButton(onClick = onCadastroClick) {
                 Text(
-                    text = "Não tem conta? Cadastre-se",
+                    text = stringResource(R.string.nao_tem_conta),
                     color = MarromMedio,
                     fontFamily = FrauncesFontFamily,
                     fontSize = 13.sp

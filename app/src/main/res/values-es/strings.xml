@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BeautyHub</string>
+    <string name="bem_vinda">Bienvenida a</string>
+    <string name="faca_login">Inicia sesion para agendar tu momento de cuidado</string>
+    <string name="email_label">CORREO:</string>
+    <string name="senha_label">CONTRASENA:</string>
+    <string name="esqueci_senha">olvide mi contrasena</string>
+    <string name="entrar">ENTRAR</string>
+    <string name="nao_tem_conta">No tienes cuenta? Registrate</string>
+    <string name="crie_conta">Crea tu cuenta en</string>
+    <string name="preencha_dados">Completa tus datos para empezar a agendar.</string>
+    <string name="nome_completo">NOMBRE COMPLETO:</string>
+    <string name="telefone">TELEFONO (WHATSAPP):</string>
+    <string name="data_nascimento">FECHA DE NACIMIENTO:</string>
+    <string name="cadastrar">REGISTRARSE</string>
+    <string name="ja_tem_conta">Ya tienes cuenta? Inicia sesion</string>
+    <string name="buscar_estabelecimento">Buscar Establecimiento</string>
+    <string name="estabelecimentos_proximos">Establecimientos Cercanos</string>
+    <string name="localidade">Localidad:</string>
+    <string name="categoria">Categoria:</string>
+    <string name="avancar">Siguiente</string>
+    <string name="limpar">Limpiar</string>
+    <string name="voltar">Volver</string>
+    <string name="meus_agendamentos">Mis Citas</string>
+    <string name="cancelar">CANCELAR</string>
+    <string name="reagendar">REAGENDAR</string>
+    <string name="confirmar_agendamento">CONFIRMAR CITA</string>
+    <string name="pagamento">Pago</string>
+    <string name="confirmar_pagamento">CONFIRMAR PAGO</string>
+    <string name="sobre_nos">Sobre Nosotros</string>
+    <string name="cartao_fidelidade">Tarjeta de Fidelidad</string>
+    <string name="sair">Salir</string>
+    <string name="bem_vindo">Bienvenido,</string>
+    <string name="nenhum_resultado">No se encontraron resultados</string>
+    <string name="dia_horario">Dia y Horario disponibles:</string>
+    <string name="escolha_servico">Elige un servicio para</string>
+    <string name="agendar_horario">agendar tu horario en</string>
+</resources>

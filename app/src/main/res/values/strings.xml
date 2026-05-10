@@ -2,8 +2,8 @@
     <string name="app_name">BeautyHub</string>
     <string name="bem_vinda">Bem-vinda ao</string>
     <string name="faca_login">Faça login para agendar seu momento de cuidado</string>
-    <string name="email">E-MAIL:</string>
-    <string name="senha">SENHA:</string>
+    <string name="email_label">E-MAIL:</string>
+    <string name="senha_label">SENHA:</string>
     <string name="esqueci_senha">esqueci a senha</string>
     <string name="entrar">ENTRAR</string>
     <string name="nao_tem_conta">Não tem conta? Cadastre-se</string>
@@ -30,4 +30,9 @@
     <string name="sobre_nos">Sobre Nós</string>
     <string name="cartao_fidelidade">Cartão Fidelidade</string>
     <string name="sair">Sair</string>
+    <string name="bem_vindo">Bem-vindo,</string>
+    <string name="nenhum_resultado">Nenhum resultado encontrado</string>
+    <string name="dia_horario">Dia e Horário disponíveis:</string>
+    <string name="escolha_servico">Escolha um serviço para</string>
+    <string name="agendar_horario">agendar seu horário na</string>
 </resources>
