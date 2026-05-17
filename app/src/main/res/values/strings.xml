@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BeautyHub</string>
     <string name="bem_vinda">Bem-vinda ao</string>
@@ -30,9 +31,57 @@
     <string name="sobre_nos">Sobre Nós</string>
     <string name="cartao_fidelidade">Cartão Fidelidade</string>
     <string name="sair">Sair</string>
-    <string name="bem_vindo">Bem-vindo,</string>
+    <string name="bem_vindo">Bem-vinda,</string>
     <string name="nenhum_resultado">Nenhum resultado encontrado</string>
     <string name="dia_horario">Dia e Horário disponíveis:</string>
     <string name="escolha_servico">Escolha um serviço para</string>
     <string name="agendar_horario">agendar seu horário na</string>
+    <string name="o_que_deseja">O que deseja fazer?</string>
+    <string name="agendar_servico">Agendar Serviço</string>
+    <string name="busque_salao">Busque um salão e agende</string>
+    <string name="gerencie_agendamentos">Veja e gerencie seus agendamentos</string>
+    <string name="acompanhe_pontos">Acompanhe seus pontos</string>
+    <string name="conheca_beautyhub">Conheça o BeautyHub</string>
+    <string name="duracao">Duração: %1$d min</string>
+    <string name="valor">Valor: R$ %1$s</string>
+    <string name="servicos_do">Serviços do</string>
+
+    <string name="srv_hidratacao">Hidratação capilar</string>
+    <string name="srv_hidratacao_desc">Tratamento nutritivo para fios ressecados</string>
+    <string name="srv_corte">Corte de cabelo</string>
+    <string name="srv_corte_desc">Corte moderno e personalizado</string>
+    <string name="srv_coloracao">Coloração</string>
+    <string name="srv_coloracao_desc">Coloração completa com tinta profissional</string>
+    <string name="srv_progressiva">Escova progressiva</string>
+    <string name="srv_progressiva_desc">Alisamento duradouro</string>
+    <string name="srv_manicure">Manicure</string>
+    <string name="srv_manicure_desc">Cuidado completo para suas unhas</string>
+    <string name="srv_pedicure">Pedicure</string>
+    <string name="srv_pedicure_desc">Cuidado completo para os pés</string>
+    <string name="srv_gel">Gel nas unhas</string>
+    <string name="srv_gel_desc">Unhas em gel duradouras</string>
+    <string name="srv_nailart">Nail art</string>
+    <string name="srv_nailart_desc">Decoração artística nas unhas</string>
+    <string name="srv_limpeza">Limpeza de pele</string>
+    <string name="srv_limpeza_desc">Limpeza profunda e revitalizante</string>
+    <string name="srv_peeling">Peeling facial</string>
+    <string name="srv_peeling_desc">Renovação celular da pele</string>
+    <string name="srv_drenagem">Drenagem linfática</string>
+    <string name="srv_drenagem_desc">Redução de inchaço e toxinas</string>
+    <string name="srv_sobrancelha">Design de sobrancelha</string>
+    <string name="srv_sobrancelha_desc">Modelagem perfeita das sobrancelhas</string>
+    <string name="srv_massagem_relax">Massagem relaxante</string>
+    <string name="srv_massagem_relax_desc">Massagem corporal completa</string>
+    <string name="srv_massagem_desp">Massagem desportiva</string>
+    <string name="srv_massagem_desp_desc">Alívio de tensões musculares</string>
+    <string name="srv_pedras">Massagem pedras quentes</string>
+    <string name="srv_pedras_desc">Relaxamento profundo com pedras</string>
+    <string name="srv_reflexologia">Reflexologia</string>
+    <string name="srv_reflexologia_desc">Massagem nos pés para equilíbrio do corpo</string>
+    <string name="srv_make_social">Maquiagem social</string>
+    <string name="srv_make_social_desc">Make completa para eventos</string>
+    <string name="srv_make_noiva">Maquiagem noiva</string>
+    <string name="srv_make_noiva_desc">Make especial para noivas</string>
+    <string name="srv_make_artistica">Maquiagem artística</string>
+    <string name="srv_make_artistica_desc">Make criativa e temática</string>
 </resources>

@@ -21,120 +21,187 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beautyhub.app.ui.theme.*
 
-val servicosPorCategoria = mapOf(
-    "Cabelo" to listOf(
-        ServicoApi(1, "Hidratação capilar", "Tratamento nutritivo para fios ressecados", 60, 120.0, null),
-        ServicoApi(2, "Corte de cabelo", "Corte moderno e personalizado", 45, 80.0, null),
-        ServicoApi(3, "Coloração", "Coloração completa com tinta profissional", 120, 200.0, null),
-        ServicoApi(4, "Escova progressiva", "Alisamento duradouro", 180, 350.0, null)
-    ),
-    "Unhas" to listOf(
-        ServicoApi(5, "Manicure", "Cuidado completo para suas unhas", 45, 60.0, null),
-        ServicoApi(6, "Pedicure", "Cuidado completo para os pés", 60, 70.0, null),
-        ServicoApi(7, "Gel nas unhas", "Unhas em gel duradouras", 90, 150.0, null),
-        ServicoApi(8, "Nail art", "Decoração artística nas unhas", 60, 100.0, null)
-    ),
-    "Estetica" to listOf(
-        ServicoApi(9, "Limpeza de pele", "Limpeza profunda e revitalizante", 90, 150.0, null),
-        ServicoApi(10, "Peeling facial", "Renovação celular da pele", 60, 180.0, null),
-        ServicoApi(11, "Drenagem linfática", "Redução de inchaço e toxinas", 60, 200.0, null),
-        ServicoApi(12, "Design de sobrancelha", "Modelagem perfeita das sobrancelhas", 30, 50.0, null)
-    ),
-    "Massagem" to listOf(
-        ServicoApi(13, "Massagem relaxante", "Massagem corporal completa", 60, 180.0, null),
-        ServicoApi(14, "Massagem desportiva", "Alívio de tensões musculares", 60, 200.0, null),
-        ServicoApi(15, "Massagem pedras quentes", "Relaxamento profundo com pedras", 90, 250.0, null),
-        ServicoApi(16, "Reflexologia", "Massagem nos pés para equilíbrio do corpo", 45, 150.0, null)
-    ),
-    "Maquiagem" to listOf(
-        ServicoApi(17, "Maquiagem social", "Make completa para eventos", 60, 150.0, null),
-        ServicoApi(18, "Maquiagem noiva", "Make especial para noivas", 120, 400.0, null),
-        ServicoApi(19, "Maquiagem artística", "Make criativa e temática", 90, 250.0, null)
-    )
-)
-
-fun getServicosPorSalao(categorias: String): List<ServicoApi> {
+fun getServicosPorSalao(categorias: String, todos: Map<String, List<ServicoApi>>): List<ServicoApi> {
     val resultado = mutableListOf<ServicoApi>()
-    servicosPorCategoria.forEach { (categoria, servicos) ->
-        if (categorias.contains(categoria, ignoreCase = true)) {
-            resultado.addAll(servicos)
-        }
+    todos.forEach { (categoria, servicos) ->
+        if (categorias.contains(categoria, ignoreCase = true)) resultado.addAll(servicos)
     }
-    return if (resultado.isEmpty()) servicosPorCategoria.values.flatten() else resultado
+    return if (resultado.isEmpty()) todos.values.flatten() else resultado
 }
 
 @Composable
 fun HomeScreen(
-    nomeUsuario: String = "Sara",
+    nomeUsuario: String = "",
     nomeSalao: String = "",
     categoriasSalao: String = "",
-    onAvancarClick: () -> Unit = {},
+    onAvancarClick: (ServicoApi) -> Unit = {},
     onMeusAgendamentosClick: () -> Unit = {},
     onCartaoFidelidadeClick: () -> Unit = {},
     onBuscaClick: () -> Unit = {},
     onSobreNosClick: () -> Unit = {},
     onSairClick: () -> Unit = {}
 ) {
-    val servicosApi = remember(categoriasSalao) { getServicosPorSalao(categoriasSalao) }
+    val servicosPorCategoria = mapOf(
+        "Cabelo" to listOf(
+            ServicoApi(25, stringResource(R.string.srv_hidratacao), stringResource(R.string.srv_hidratacao_desc), 60, 120.0, null),
+            ServicoApi(32, stringResource(R.string.srv_corte), stringResource(R.string.srv_corte_desc), 45, 80.0, null),
+            ServicoApi(33, stringResource(R.string.srv_coloracao), stringResource(R.string.srv_coloracao_desc), 120, 200.0, null),
+            ServicoApi(34, stringResource(R.string.srv_progressiva), stringResource(R.string.srv_progressiva_desc), 180, 350.0, null)
+        ),
+        "Unhas" to listOf(
+            ServicoApi(26, stringResource(R.string.srv_manicure), stringResource(R.string.srv_manicure_desc), 45, 60.0, null),
+            ServicoApi(29, stringResource(R.string.srv_pedicure), stringResource(R.string.srv_pedicure_desc), 60, 70.0, null),
+            ServicoApi(30, stringResource(R.string.srv_gel), stringResource(R.string.srv_gel_desc), 90, 150.0, null),
+            ServicoApi(31, stringResource(R.string.srv_nailart), stringResource(R.string.srv_nailart_desc), 60, 100.0, null)
+        ),
+        "Estetica" to listOf(
+            ServicoApi(27, stringResource(R.string.srv_limpeza), stringResource(R.string.srv_limpeza_desc), 90, 150.0, null),
+            ServicoApi(35, stringResource(R.string.srv_peeling), stringResource(R.string.srv_peeling_desc), 60, 180.0, null),
+            ServicoApi(36, stringResource(R.string.srv_drenagem), stringResource(R.string.srv_drenagem_desc), 60, 200.0, null),
+            ServicoApi(37, stringResource(R.string.srv_sobrancelha), stringResource(R.string.srv_sobrancelha_desc), 30, 50.0, null)
+        ),
+        "Massagem" to listOf(
+            ServicoApi(28, stringResource(R.string.srv_massagem_relax), stringResource(R.string.srv_massagem_relax_desc), 60, 180.0, null),
+            ServicoApi(38, stringResource(R.string.srv_massagem_desp), stringResource(R.string.srv_massagem_desp_desc), 60, 200.0, null),
+            ServicoApi(39, stringResource(R.string.srv_pedras), stringResource(R.string.srv_pedras_desc), 90, 250.0, null),
+            ServicoApi(40, stringResource(R.string.srv_reflexologia), stringResource(R.string.srv_reflexologia_desc), 45, 150.0, null)
+        ),
+        "Maquiagem" to listOf(
+            ServicoApi(41, stringResource(R.string.srv_make_social), stringResource(R.string.srv_make_social_desc), 60, 150.0, null),
+            ServicoApi(42, stringResource(R.string.srv_make_noiva), stringResource(R.string.srv_make_noiva_desc), 120, 400.0, null),
+            ServicoApi(43, stringResource(R.string.srv_make_artistica), stringResource(R.string.srv_make_artistica_desc), 90, 250.0, null)
+        )
+    )
+
+    val servicosApi = remember(categoriasSalao, servicosPorCategoria) {
+        getServicosPorSalao(categoriasSalao, servicosPorCategoria)
+    }
     var servicoSelecionado by remember { mutableStateOf<ServicoApi?>(null) }
     var menuAberto by remember { mutableStateOf(false) }
 
+    val nome = nomeUsuario.ifEmpty {
+        SessionManager.getName()?.split(" ")?.firstOrNull()
+            ?: (SessionManager.getEmail() ?: "").substringBefore("@").replaceFirstChar { it.uppercase() }
+    }
+
     Box(modifier = Modifier.fillMaxSize().background(BrancoQuente)) {
         Box(
-            modifier = Modifier.fillMaxWidth().height(220.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(220.dp)
                 .shadow(16.dp, RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp))
                 .background(MarromEscuro, RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)),
             contentAlignment = Alignment.TopCenter
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(top = 48.dp)) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(top = 48.dp)
+            ) {
                 Text(
-                    text = if (nomeSalao.isNotEmpty()) "Serviços do $nomeSalao" else stringResource(R.string.escolha_servico),
-                    color = BrancoQuente, fontFamily = FrauncesFontFamily, fontSize = 18.sp,
-                    textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 32.dp)
+                    text = if (nomeSalao.isNotEmpty())
+                        "${stringResource(R.string.servicos_do)} $nomeSalao"
+                    else
+                        stringResource(R.string.escolha_servico),
+                    color = BrancoQuente,
+                    fontFamily = FrauncesFontFamily,
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 32.dp)
                 )
                 if (nomeSalao.isEmpty()) {
-                    Text(stringResource(R.string.agendar_horario), color = BrancoQuente, fontFamily = FrauncesFontFamily, fontSize = 18.sp, textAlign = TextAlign.Center)
+                    Text(
+                        stringResource(R.string.agendar_horario),
+                        color = BrancoQuente,
+                        fontFamily = FrauncesFontFamily,
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
+
             Box(modifier = Modifier.align(Alignment.TopEnd).padding(top = 48.dp, end = 16.dp)) {
                 IconButton(onClick = { menuAberto = true }) {
                     Icon(Icons.Filled.Menu, contentDescription = "Menu", tint = BrancoQuente, modifier = Modifier.size(28.dp))
                 }
-                DropdownMenu(expanded = menuAberto, onDismissRequest = { menuAberto = false }, modifier = Modifier.background(BrancoQuente)) {
-                    DropdownMenuItem(text = { Text(stringResource(R.string.meus_agendamentos), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
-                        onClick = { menuAberto = false; onMeusAgendamentosClick() })
+                DropdownMenu(
+                    expanded = menuAberto,
+                    onDismissRequest = { menuAberto = false },
+                    modifier = Modifier.background(BrancoQuente)
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.meus_agendamentos), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
+                        onClick = { menuAberto = false; onMeusAgendamentosClick() }
+                    )
                     HorizontalDivider(color = BegeMedio)
-                    DropdownMenuItem(text = { Text(stringResource(R.string.cartao_fidelidade), color = Dourado, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
-                        onClick = { menuAberto = false; onCartaoFidelidadeClick() })
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.cartao_fidelidade), color = Dourado, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
+                        onClick = { menuAberto = false; onCartaoFidelidadeClick() }
+                    )
                     HorizontalDivider(color = BegeMedio)
-                    DropdownMenuItem(text = { Text(stringResource(R.string.buscar_estabelecimento), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
-                        onClick = { menuAberto = false; onBuscaClick() })
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.buscar_estabelecimento), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
+                        onClick = { menuAberto = false; onBuscaClick() }
+                    )
                     HorizontalDivider(color = BegeMedio)
-                    DropdownMenuItem(text = { Text(stringResource(R.string.sobre_nos), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
-                        onClick = { menuAberto = false; onSobreNosClick() })
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.sobre_nos), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
+                        onClick = { menuAberto = false; onSobreNosClick() }
+                    )
                     HorizontalDivider(color = BegeMedio)
-                    DropdownMenuItem(text = { Text(stringResource(R.string.sair), color = Vermelho, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
-                        onClick = { menuAberto = false; SessionManager.logout(); onSairClick() })
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.sair), color = Vermelho, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
+                        onClick = { menuAberto = false; SessionManager.logout(); onSairClick() }
+                    )
                 }
             }
         }
 
-        Box(modifier = Modifier.align(Alignment.TopCenter).offset(y = 123.dp).size(150.dp).clip(RoundedCornerShape(75.dp)).background(MarromEscuro)) {
-            Image(painter = painterResource(id = R.drawable.logo_beautyhub), contentDescription = "Logo BeautyHub", modifier = Modifier.fillMaxSize())
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = 123.dp)
+                .size(150.dp)
+                .clip(RoundedCornerShape(75.dp))
+                .background(MarromEscuro)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo_beautyhub),
+                contentDescription = "Logo BeautyHub",
+                modifier = Modifier.fillMaxSize()
+            )
         }
 
-        Column(modifier = Modifier.fillMaxSize().padding(top = 290.dp).verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("${stringResource(R.string.bem_vindo)} $nomeUsuario", color = Dourado, fontFamily = FrauncesFontFamily, fontSize = 20.sp)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 290.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                "${stringResource(R.string.bem_vindo)} $nome",
+                color = Dourado,
+                fontFamily = FrauncesFontFamily,
+                fontSize = 20.sp
+            )
             Spacer(modifier = Modifier.height(24.dp))
+
             servicosApi.forEach { servico ->
-                ServicoApiCard(servico = servico, selecionado = servicoSelecionado?.id == servico.id, onSelecionar = { servicoSelecionado = servico })
+                ServicoApiCard(
+                    servico = servico,
+                    selecionado = servicoSelecionado?.id == servico.id,
+                    onSelecionar = { servicoSelecionado = servico }
+                )
                 Spacer(modifier = Modifier.height(12.dp))
             }
+
             Spacer(modifier = Modifier.height(16.dp))
             Button(
-                onClick = { if (servicoSelecionado != null) onAvancarClick() },
+                onClick = { servicoSelecionado?.let { onAvancarClick(it) } },
                 modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth().height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = if (servicoSelecionado != null) MarromEscuro else BegeMedio),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (servicoSelecionado != null) MarromEscuro else BegeMedio
+                ),
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(stringResource(R.string.avancar), color = BrancoQuente, fontFamily = FrauncesFontFamily, fontSize = 16.sp)
@@ -147,16 +214,23 @@ fun HomeScreen(
 @Composable
 fun ServicoApiCard(servico: ServicoApi, selecionado: Boolean, onSelecionar: () -> Unit) {
     Row(
-        modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth()
-            .background(MarromEscuro, RoundedCornerShape(12.dp)).padding(16.dp),
+        modifier = Modifier
+            .padding(horizontal = 32.dp)
+            .fillMaxWidth()
+            .background(MarromEscuro, RoundedCornerShape(12.dp))
+            .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        RadioButton(selected = selecionado, onClick = onSelecionar, colors = RadioButtonDefaults.colors(selectedColor = Dourado, unselectedColor = BegeMedio))
+        RadioButton(
+            selected = selecionado,
+            onClick = onSelecionar,
+            colors = RadioButtonDefaults.colors(selectedColor = Dourado, unselectedColor = BegeMedio)
+        )
         Spacer(modifier = Modifier.width(8.dp))
         Column {
             Text(servico.nome, color = BrancoQuente, fontFamily = FrauncesFontFamily, fontSize = 15.sp)
-            Text("Duração: ${servico.duracaoMinutos} min", color = BegeMedio, fontSize = 12.sp)
-            Text("Valor: R$ ${"%.2f".format(servico.preco)}", color = BegeMedio, fontSize = 12.sp)
+            Text(stringResource(R.string.duracao, servico.duracaoMinutos), color = BegeMedio, fontSize = 12.sp)
+            Text(stringResource(R.string.valor, "%.2f".format(servico.preco)), color = BegeMedio, fontSize = 12.sp)
         }
     }
 }

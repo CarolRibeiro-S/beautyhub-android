@@ -5,12 +5,9 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 
-// Modelos de requisição
-data class LoginRequest(
-    val email: String,
-    val password: String
-)
+data class LoginRequest(val email: String, val password: String)
 
 data class RegisterRequest(
     val fullName: String,
@@ -19,12 +16,11 @@ data class RegisterRequest(
     val password: String
 )
 
-// Modelos de resposta
 data class LoginResponse(
-    val token: String
+    val token: String,
+    val fullName: String? = null
 )
 
-// Modelo do salao dentro do serviço
 data class SalaoApi(
     val id: Int,
     val nome: String,
@@ -34,7 +30,6 @@ data class SalaoApi(
     val mediaAvaliacao: Double?
 )
 
-// Endpoint de Serviços
 data class ServicoApi(
     val id: Int,
     val nome: String,
@@ -44,7 +39,21 @@ data class ServicoApi(
     val salao: SalaoApi?
 )
 
-// Endpoint de agendamento
+data class ServicoApiSimples(
+    val id: Int? = null,
+    val nome: String? = null,
+    val preco: Double? = null,
+    val duracaoMinutos: Int? = null,
+    val salao: SalaoApi? = null,
+    val descricao: String? = null
+)
+
+data class ClienteApi(
+    val id: Int,
+    val fullName: String,
+    val email: String
+)
+
 data class AppointmentRequest(
     val serviceId: Int,
     val dataHoraInicio: String
@@ -53,10 +62,13 @@ data class AppointmentRequest(
 data class AppointmentResponse(
     val id: Int,
     val status: String,
-    val dataHoraInicio: String
+    val dataHoraInicio: String,
+    val servicoNome: String? = null,
+    val servicoPreco: Double? = null,
+    val service: ServicoApiSimples? = null,
+    val client: ClienteApi? = null
 )
 
-// Interface da API
 interface ApiService {
     @POST("auth/login")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
@@ -77,9 +89,14 @@ interface ApiService {
     suspend fun getMyAppointments(
         @Header("Authorization") token: String
     ): Response<List<AppointmentResponse>>
+
+    @POST("appointments/{id}/cancel")
+    suspend fun cancelAppointment(
+        @Header("Authorization") token: String,
+        @Path("id") id: Long
+    ): Response<Void>
 }
 
-// Instância global do serviço
 object Api {
     val service: ApiService = ApiConfig.retrofit.create(ApiService::class.java)
 }
