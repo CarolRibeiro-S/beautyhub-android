@@ -53,6 +53,17 @@ fun PagamentoScreen(
     val pixCopiadoMsg = stringResource(R.string.pix_copiado)
     val erroAgendamento = stringResource(R.string.erro_agendamento)
     val erroConexao = stringResource(R.string.erro_conexao)
+    val erroCartaoNumero = stringResource(R.string.erro_cartao_numero)
+    val erroCartaoValidade = stringResource(R.string.erro_cartao_validade)
+    val erroCartaoCvv = stringResource(R.string.erro_cartao_cvv)
+
+    fun validarCartao(): Boolean {
+        val apenasNumeros = numeroCartao.filter { it.isDigit() }
+        if (apenasNumeros.length != 16) { erro = erroCartaoNumero; return false }
+        if (!validade.matches(Regex("\\d{2}/\\d{2}"))) { erro = erroCartaoValidade; return false }
+        if (cvv.filter { it.isDigit() }.length != 3) { erro = erroCartaoCvv; return false }
+        return true
+    }
 
     Box(modifier = Modifier.fillMaxSize().background(BrancoQuente)) {
         Box(
@@ -87,10 +98,7 @@ fun PagamentoScreen(
                     Text(stringResource(R.string.meus_agendamentos), color = BrancoQuente, fontFamily = FrauncesFontFamily, fontSize = 13.sp)
                 }
             } else {
-                Box(
-                    modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth()
-                        .background(BegeClaro, RoundedCornerShape(12.dp)).padding(16.dp)
-                ) {
+                Box(modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth().background(BegeClaro, RoundedCornerShape(12.dp)).padding(16.dp)) {
                     Column {
                         Text(stringResource(R.string.resumo_agendamento), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 16.sp)
                         Spacer(modifier = Modifier.height(8.dp))
@@ -111,10 +119,10 @@ fun PagamentoScreen(
                     Row(
                         modifier = Modifier.padding(horizontal = 32.dp, vertical = 4.dp).fillMaxWidth()
                             .background(if (selecionado) MarromEscuro else BegeClaro, RoundedCornerShape(8.dp))
-                            .clickable { metodoPagamento = metodo }.padding(16.dp),
+                            .clickable { metodoPagamento = metodo; erro = "" }.padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        RadioButton(selected = selecionado, onClick = { metodoPagamento = metodo }, colors = RadioButtonDefaults.colors(selectedColor = Dourado, unselectedColor = MarromMedio))
+                        RadioButton(selected = selecionado, onClick = { metodoPagamento = metodo; erro = "" }, colors = RadioButtonDefaults.colors(selectedColor = Dourado, unselectedColor = MarromMedio))
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(metodo, color = if (selecionado) BrancoQuente else MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 14.sp)
                     }
@@ -127,11 +135,13 @@ fun PagamentoScreen(
                         Text(stringResource(R.string.numero_cartao), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
                         Spacer(modifier = Modifier.height(4.dp))
                         OutlinedTextField(
-                            value = numeroCartao, onValueChange = { numeroCartao = it },
+                            value = numeroCartao,
+                            onValueChange = { if (it.filter { c -> c.isDigit() }.length <= 16) numeroCartao = it },
                             placeholder = { Text("0000 0000 0000 0000", color = BegeMedio) },
                             modifier = Modifier.fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MarromEscuro, unfocusedBorderColor = BegeMedio, focusedContainerColor = BegeClaro, unfocusedContainerColor = BegeClaro),
-                            shape = RoundedCornerShape(8.dp)
+                            shape = RoundedCornerShape(8.dp),
+                            singleLine = true
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -139,22 +149,26 @@ fun PagamentoScreen(
                                 Text(stringResource(R.string.validade), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
                                 Spacer(modifier = Modifier.height(4.dp))
                                 OutlinedTextField(
-                                    value = validade, onValueChange = { validade = it },
+                                    value = validade,
+                                    onValueChange = { if (it.length <= 5) validade = it },
                                     placeholder = { Text("MM/AA", color = BegeMedio) },
                                     modifier = Modifier.fillMaxWidth(),
                                     colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MarromEscuro, unfocusedBorderColor = BegeMedio, focusedContainerColor = BegeClaro, unfocusedContainerColor = BegeClaro),
-                                    shape = RoundedCornerShape(8.dp)
+                                    shape = RoundedCornerShape(8.dp),
+                                    singleLine = true
                                 )
                             }
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(stringResource(R.string.cvv), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 12.sp)
                                 Spacer(modifier = Modifier.height(4.dp))
                                 OutlinedTextField(
-                                    value = cvv, onValueChange = { cvv = it },
+                                    value = cvv,
+                                    onValueChange = { if (it.filter { c -> c.isDigit() }.length <= 3) cvv = it },
                                     placeholder = { Text("123", color = BegeMedio) },
                                     modifier = Modifier.fillMaxWidth(),
                                     colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MarromEscuro, unfocusedBorderColor = BegeMedio, focusedContainerColor = BegeClaro, unfocusedContainerColor = BegeClaro),
-                                    shape = RoundedCornerShape(8.dp)
+                                    shape = RoundedCornerShape(8.dp),
+                                    singleLine = true
                                 )
                             }
                         }
@@ -171,11 +185,7 @@ fun PagamentoScreen(
                         Spacer(modifier = Modifier.height(8.dp))
                         Text("beautyhub@pagamento.com", color = Dourado, fontFamily = FrauncesFontFamily, fontSize = 14.sp, textAlign = TextAlign.Center)
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            pixCodigo,
-                            color = MarromMedio, fontSize = 10.sp, textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(horizontal = 8.dp)
-                        )
+                        Text(pixCodigo, color = MarromMedio, fontSize = 10.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 8.dp))
                         Spacer(modifier = Modifier.height(12.dp))
                         Button(
                             onClick = {
@@ -204,6 +214,10 @@ fun PagamentoScreen(
                 Button(
                     onClick = {
                         if (metodoPagamento.isEmpty()) return@Button
+                        // Valida cartão se for crédito ou débito
+                        if (metodoPagamento == cartaoCredito || metodoPagamento == cartaoDebito) {
+                            if (!validarCartao()) return@Button
+                        }
                         scope.launch {
                             carregando = true
                             erro = ""

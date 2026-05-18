@@ -152,4 +152,8 @@
     <string name="fale_conosco_titulo_modal">Contáctanos</string>
     <string name="fechar">Cerrar</string>
     <string name="logo_beautyhub">Logo BeautyHub</string> <!-- ADICIONADO AQUI -->
+    <string name="erro_cartao_numero">Ingresa los 16 números de la tarjeta</string>
+    <string name="erro_cartao_validade">Ingresa la fecha en formato MM/AA</string>
+    <string name="erro_cartao_cvv">Ingresa el código de seguridad (3 dígitos)</string>
+    <string name="erro_horario_ocupado">¡Horario ocupado! Elige otro horario.</string>
 </resources>
