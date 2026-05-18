@@ -80,9 +80,7 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                 categoriasSalao = categoriasSalao,
                 onAvancarClick = { servico ->
                     val nomeEnc = Uri.encode(servico.nome)
-                    navController.navigate(
-                        "agendamento/${servico.id}/$nomeEnc/${servico.preco}/${servico.duracaoMinutos}"
-                    )
+                    navController.navigate("agendamento/${servico.id}/$nomeEnc/${servico.preco}/${servico.duracaoMinutos}")
                 },
                 onMeusAgendamentosClick = { navController.navigate(Screen.MeusAgendamentos.route) },
                 onCartaoFidelidadeClick = { navController.navigate(Screen.CartaoFidelidade.route) },
@@ -92,7 +90,8 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                     navController.navigate(Screen.Login.route) {
                         popUpTo(0) { inclusive = true }
                     }
-                }
+                },
+                onVoltarClick = { navController.popBackStack() }
             )
         }
 
@@ -110,9 +109,7 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                     val nomeEnc = Uri.encode(servicoNome)
                     val dataFormEnc = Uri.encode(dataFormatada)
                     val dataHoraEnc = Uri.encode(dataHora)
-                    navController.navigate(
-                        "pagamento/$servicoId/$nomeEnc/$servicoPreco/$servicoDuracao/$dataFormEnc/$dataHoraEnc"
-                    )
+                    navController.navigate("pagamento/$servicoId/$nomeEnc/$servicoPreco/$servicoDuracao/$dataFormEnc/$dataHoraEnc")
                 },
                 onVoltarClick = { navController.popBackStack() }
             )
@@ -134,7 +131,10 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         composable(Screen.MeusAgendamentos.route) {
             MeusAgendamentosScreen(
                 onVoltarClick = { navController.popBackStack() },
-                onReagendarClick = { navController.navigate(Screen.Busca.route) },
+                onReagendarClick = { servicoId, servicoNome, servicoPreco, servicoDuracao ->
+                    val nomeEnc = Uri.encode(servicoNome)
+                    navController.navigate("agendamento/$servicoId/$nomeEnc/$servicoPreco/$servicoDuracao")
+                },
                 onHomeClick = {
                     navController.navigate(Screen.Dashboard.route) {
                         popUpTo(Screen.Dashboard.route) { inclusive = true }

@@ -1,4 +1,7 @@
-plugins {
+// Remova o primeiro bloco 'plugins' que estava aqui.
+// Ele não deve existir no build.gradle.kts do módulo 'app'.
+
+plugins { // Este é o único bloco 'plugins' que deve estar no build.gradle.kts do módulo 'app'
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
@@ -45,6 +48,11 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // Adicione estas duas linhas para o OkHttp e Logging Interceptor
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

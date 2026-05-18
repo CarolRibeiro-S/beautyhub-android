@@ -65,6 +65,7 @@ data class AppointmentResponse(
     val dataHoraInicio: String,
     val servicoNome: String? = null,
     val servicoPreco: Double? = null,
+    val serviceId: Int? = null,
     val service: ServicoApiSimples? = null,
     val client: ClienteApi? = null
 )

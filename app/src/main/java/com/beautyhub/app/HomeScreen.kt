@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -39,7 +37,8 @@ fun HomeScreen(
     onCartaoFidelidadeClick: () -> Unit = {},
     onBuscaClick: () -> Unit = {},
     onSobreNosClick: () -> Unit = {},
-    onSairClick: () -> Unit = {}
+    onSairClick: () -> Unit = {},
+    onVoltarClick: () -> Unit = {}
 ) {
     val servicosPorCategoria = mapOf(
         "Cabelo" to listOf(
@@ -77,7 +76,6 @@ fun HomeScreen(
         getServicosPorSalao(categoriasSalao, servicosPorCategoria)
     }
     var servicoSelecionado by remember { mutableStateOf<ServicoApi?>(null) }
-    var menuAberto by remember { mutableStateOf(false) }
 
     val nome = nomeUsuario.ifEmpty {
         SessionManager.getName()?.split(" ")?.firstOrNull()
@@ -86,112 +84,36 @@ fun HomeScreen(
 
     Box(modifier = Modifier.fillMaxSize().background(BrancoQuente)) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp)
+            modifier = Modifier.fillMaxWidth().height(220.dp)
                 .shadow(16.dp, RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp))
                 .background(MarromEscuro, RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)),
             contentAlignment = Alignment.TopCenter
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(top = 48.dp)
-            ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(top = 48.dp)) {
                 Text(
-                    text = if (nomeSalao.isNotEmpty())
-                        "${stringResource(R.string.servicos_do)} $nomeSalao"
-                    else
-                        stringResource(R.string.escolha_servico),
-                    color = BrancoQuente,
-                    fontFamily = FrauncesFontFamily,
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(horizontal = 32.dp)
+                    text = if (nomeSalao.isNotEmpty()) "${stringResource(R.string.servicos_do)} $nomeSalao" else stringResource(R.string.escolha_servico),
+                    color = BrancoQuente, fontFamily = FrauncesFontFamily, fontSize = 18.sp,
+                    textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 32.dp)
                 )
                 if (nomeSalao.isEmpty()) {
-                    Text(
-                        stringResource(R.string.agendar_horario),
-                        color = BrancoQuente,
-                        fontFamily = FrauncesFontFamily,
-                        fontSize = 18.sp,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-
-            Box(modifier = Modifier.align(Alignment.TopEnd).padding(top = 48.dp, end = 16.dp)) {
-                IconButton(onClick = { menuAberto = true }) {
-                    Icon(Icons.Filled.Menu, contentDescription = "Menu", tint = BrancoQuente, modifier = Modifier.size(28.dp))
-                }
-                DropdownMenu(
-                    expanded = menuAberto,
-                    onDismissRequest = { menuAberto = false },
-                    modifier = Modifier.background(BrancoQuente)
-                ) {
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.meus_agendamentos), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
-                        onClick = { menuAberto = false; onMeusAgendamentosClick() }
-                    )
-                    HorizontalDivider(color = BegeMedio)
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.cartao_fidelidade), color = Dourado, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
-                        onClick = { menuAberto = false; onCartaoFidelidadeClick() }
-                    )
-                    HorizontalDivider(color = BegeMedio)
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.buscar_estabelecimento), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
-                        onClick = { menuAberto = false; onBuscaClick() }
-                    )
-                    HorizontalDivider(color = BegeMedio)
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.sobre_nos), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
-                        onClick = { menuAberto = false; onSobreNosClick() }
-                    )
-                    HorizontalDivider(color = BegeMedio)
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.sair), color = Vermelho, fontFamily = FrauncesFontFamily, fontSize = 14.sp) },
-                        onClick = { menuAberto = false; SessionManager.logout(); onSairClick() }
-                    )
+                    Text(stringResource(R.string.agendar_horario), color = BrancoQuente, fontFamily = FrauncesFontFamily, fontSize = 18.sp, textAlign = TextAlign.Center)
                 }
             }
         }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .offset(y = 123.dp)
-                .size(150.dp)
-                .clip(RoundedCornerShape(75.dp))
-                .background(MarromEscuro)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo_beautyhub),
-                contentDescription = "Logo BeautyHub",
-                modifier = Modifier.fillMaxSize()
-            )
+        Box(modifier = Modifier.align(Alignment.TopCenter).offset(y = 123.dp).size(150.dp).clip(RoundedCornerShape(75.dp)).background(MarromEscuro)) {
+            Image(painter = painterResource(id = R.drawable.logo_beautyhub), contentDescription = "Logo BeautyHub", modifier = Modifier.fillMaxSize())
         }
 
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 290.dp)
-                .verticalScroll(rememberScrollState()),
+            modifier = Modifier.fillMaxSize().padding(top = 290.dp).verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                "${stringResource(R.string.bem_vindo)} $nome",
-                color = Dourado,
-                fontFamily = FrauncesFontFamily,
-                fontSize = 20.sp
-            )
+            Text("${stringResource(R.string.bem_vindo)} $nome", color = Dourado, fontFamily = FrauncesFontFamily, fontSize = 20.sp)
             Spacer(modifier = Modifier.height(24.dp))
 
             servicosApi.forEach { servico ->
-                ServicoApiCard(
-                    servico = servico,
-                    selecionado = servicoSelecionado?.id == servico.id,
-                    onSelecionar = { servicoSelecionado = servico }
-                )
+                ServicoApiCard(servico = servico, selecionado = servicoSelecionado?.id == servico.id, onSelecionar = { servicoSelecionado = servico })
                 Spacer(modifier = Modifier.height(12.dp))
             }
 
@@ -199,12 +121,14 @@ fun HomeScreen(
             Button(
                 onClick = { servicoSelecionado?.let { onAvancarClick(it) } },
                 modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth().height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (servicoSelecionado != null) MarromEscuro else BegeMedio
-                ),
+                colors = ButtonDefaults.buttonColors(containerColor = if (servicoSelecionado != null) MarromEscuro else BegeMedio),
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(stringResource(R.string.avancar), color = BrancoQuente, fontFamily = FrauncesFontFamily, fontSize = 16.sp)
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            TextButton(onClick = onVoltarClick) {
+                Text(stringResource(R.string.voltar), color = MarromMedio, fontFamily = FrauncesFontFamily, fontSize = 13.sp)
             }
             Spacer(modifier = Modifier.height(32.dp))
         }
@@ -214,18 +138,11 @@ fun HomeScreen(
 @Composable
 fun ServicoApiCard(servico: ServicoApi, selecionado: Boolean, onSelecionar: () -> Unit) {
     Row(
-        modifier = Modifier
-            .padding(horizontal = 32.dp)
-            .fillMaxWidth()
-            .background(MarromEscuro, RoundedCornerShape(12.dp))
-            .padding(16.dp),
+        modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth()
+            .background(MarromEscuro, RoundedCornerShape(12.dp)).padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        RadioButton(
-            selected = selecionado,
-            onClick = onSelecionar,
-            colors = RadioButtonDefaults.colors(selectedColor = Dourado, unselectedColor = BegeMedio)
-        )
+        RadioButton(selected = selecionado, onClick = onSelecionar, colors = RadioButtonDefaults.colors(selectedColor = Dourado, unselectedColor = BegeMedio))
         Spacer(modifier = Modifier.width(8.dp))
         Column {
             Text(servico.nome, color = BrancoQuente, fontFamily = FrauncesFontFamily, fontSize = 15.sp)

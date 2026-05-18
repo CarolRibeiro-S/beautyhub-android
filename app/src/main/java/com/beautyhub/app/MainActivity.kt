@@ -24,6 +24,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Adicione esta linha para inicializar o SessionManager
+        SessionManager.init(this)
+
         setContent {
             BeautyHubTheme {
                 val navController = rememberNavController()
