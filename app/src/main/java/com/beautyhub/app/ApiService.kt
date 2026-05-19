@@ -6,6 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 data class LoginRequest(val email: String, val password: String)
 
@@ -96,6 +97,12 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") id: Long
     ): Response<Void>
+
+    @GET("appointments/ocupados")
+    suspend fun getHorariosOcupados(
+        @Query("serviceId") serviceId: Int,
+        @Query("data") data: String
+    ): Response<List<String>>
 }
 
 object Api {
