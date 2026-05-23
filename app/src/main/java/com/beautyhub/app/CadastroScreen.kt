@@ -21,6 +21,16 @@ import androidx.compose.ui.unit.sp
 import com.beautyhub.app.ui.theme.*
 import kotlinx.coroutines.launch
 
+fun formatarDataNascimento(input: String): String {
+    val digits = input.filter { it.isDigit() }.take(8)
+    return buildString {
+        digits.forEachIndexed { i, c ->
+            if (i == 2 || i == 4) append('/')
+            append(c)
+        }
+    }
+}
+
 @Composable
 fun CadastroScreen(
     onCadastroClick: () -> Unit = {},
@@ -64,6 +74,22 @@ fun CadastroScreen(
                 fontSize = 22.sp,
                 modifier = Modifier.padding(top = 60.dp)
             )
+
+            // Botão voltar no topo esquerdo do header
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(top = 48.dp, start = 8.dp)
+            ) {
+                TextButton(onClick = onVoltarClick) {
+                    Text(
+                        "← ${stringResource(R.string.voltar)}",
+                        color = BrancoQuente,
+                        fontFamily = FrauncesFontFamily,
+                        fontSize = 13.sp
+                    )
+                }
+            }
         }
 
         Box(
@@ -162,7 +188,7 @@ fun CadastroScreen(
 
             OutlinedTextField(
                 value = dataNascimento,
-                onValueChange = { dataNascimento = it },
+                onValueChange = { dataNascimento = formatarDataNascimento(it) },
                 label = { Text(stringResource(R.string.data_nascimento)) },
                 singleLine = true,
                 placeholder = { Text("DD/MM/AAAA", color = BegeMedio) },
@@ -179,7 +205,8 @@ fun CadastroScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = erro, color = Vermelho, fontSize = 12.sp,
-                    textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 32.dp)
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 32.dp)
                 )
             }
 
@@ -208,7 +235,6 @@ fun CadastroScreen(
                                     )
                                     val response = Api.service.register(request)
                                     if (response.isSuccessful) {
-                                        // Login automático após cadastro
                                         try {
                                             val loginRequest = LoginRequest(email = email, password = senha)
                                             val loginResponse = Api.service.login(loginRequest)
@@ -228,10 +254,10 @@ fun CadastroScreen(
                                         onCadastroClick()
                                     } else {
                                         val errorBody = response.errorBody()?.string()
-                                        erro = "Erro no cadastro: ${errorBody ?: "Tente novamente."}"
+                                        erro = "Erro ${response.code()}: ${errorBody ?: "Tente novamente."}"
                                     }
                                 } catch (e: Exception) {
-                                    erro = "Erro de conexão: ${e.localizedMessage ?: "Verifique sua internet."}"
+                                    erro = "Erro: ${e.javaClass.simpleName} - ${e.localizedMessage ?: "Verifique sua internet."}"
                                 } finally {
                                     isLoading = false
                                 }
@@ -247,14 +273,24 @@ fun CadastroScreen(
                 if (isLoading) {
                     CircularProgressIndicator(color = BrancoQuente, modifier = Modifier.size(24.dp))
                 } else {
-                    Text(stringResource(R.string.cadastrar), color = BrancoQuente, fontFamily = FrauncesFontFamily, fontSize = 16.sp)
+                    Text(
+                        stringResource(R.string.cadastrar),
+                        color = BrancoQuente,
+                        fontFamily = FrauncesFontFamily,
+                        fontSize = 16.sp
+                    )
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             TextButton(onClick = onVoltarClick) {
-                Text(stringResource(R.string.ja_tem_conta), color = MarromMedio, fontFamily = FrauncesFontFamily, fontSize = 13.sp)
+                Text(
+                    stringResource(R.string.ja_tem_conta),
+                    color = MarromMedio,
+                    fontFamily = FrauncesFontFamily,
+                    fontSize = 13.sp
+                )
             }
 
             Spacer(modifier = Modifier.height(32.dp))

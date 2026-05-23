@@ -83,6 +83,26 @@ fun PagamentoScreen(
             modifier = Modifier.fillMaxSize().padding(top = 290.dp).verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Aviso de tela em desenvolvimento
+            Box(
+                modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth()
+                    .background(Dourado.copy(alpha = 0.15f), RoundedCornerShape(8.dp))
+                    .padding(12.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("⚠️", fontSize = 16.sp)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        "Tela em desenvolvimento. O pagamento é simulado para fins de demonstração.",
+                        color = MarromEscuro,
+                        fontSize = 12.sp,
+                        lineHeight = 16.sp
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             if (pagamentoConfirmado) {
                 Spacer(modifier = Modifier.height(32.dp))
                 Text(stringResource(R.string.pagamento_confirmado), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 20.sp, textAlign = TextAlign.Center)
@@ -140,8 +160,7 @@ fun PagamentoScreen(
                             placeholder = { Text("0000 0000 0000 0000", color = BegeMedio) },
                             modifier = Modifier.fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MarromEscuro, unfocusedBorderColor = BegeMedio, focusedContainerColor = BegeClaro, unfocusedContainerColor = BegeClaro),
-                            shape = RoundedCornerShape(8.dp),
-                            singleLine = true
+                            shape = RoundedCornerShape(8.dp), singleLine = true
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -154,8 +173,7 @@ fun PagamentoScreen(
                                     placeholder = { Text("MM/AA", color = BegeMedio) },
                                     modifier = Modifier.fillMaxWidth(),
                                     colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MarromEscuro, unfocusedBorderColor = BegeMedio, focusedContainerColor = BegeClaro, unfocusedContainerColor = BegeClaro),
-                                    shape = RoundedCornerShape(8.dp),
-                                    singleLine = true
+                                    shape = RoundedCornerShape(8.dp), singleLine = true
                                 )
                             }
                             Column(modifier = Modifier.weight(1f)) {
@@ -167,8 +185,7 @@ fun PagamentoScreen(
                                     placeholder = { Text("123", color = BegeMedio) },
                                     modifier = Modifier.fillMaxWidth(),
                                     colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MarromEscuro, unfocusedBorderColor = BegeMedio, focusedContainerColor = BegeClaro, unfocusedContainerColor = BegeClaro),
-                                    shape = RoundedCornerShape(8.dp),
-                                    singleLine = true
+                                    shape = RoundedCornerShape(8.dp), singleLine = true
                                 )
                             }
                         }
@@ -214,7 +231,6 @@ fun PagamentoScreen(
                 Button(
                     onClick = {
                         if (metodoPagamento.isEmpty()) return@Button
-                        // Valida cartão se for crédito ou débito
                         if (metodoPagamento == cartaoCredito || metodoPagamento == cartaoDebito) {
                             if (!validarCartao()) return@Button
                         }
