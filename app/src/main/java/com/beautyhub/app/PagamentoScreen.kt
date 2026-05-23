@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beautyhub.app.ui.theme.*
@@ -44,6 +45,7 @@ fun PagamentoScreen(
     var carregando by remember { mutableStateOf(false) }
     var erro by remember { mutableStateOf("") }
     var pixCopiado by remember { mutableStateOf(false) }
+    var desconto by remember { mutableStateOf<DescontoResponse?>(null) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
@@ -56,6 +58,25 @@ fun PagamentoScreen(
     val erroCartaoNumero = stringResource(R.string.erro_cartao_numero)
     val erroCartaoValidade = stringResource(R.string.erro_cartao_validade)
     val erroCartaoCvv = stringResource(R.string.erro_cartao_cvv)
+
+    // Calcula preço com desconto
+    val precoFinal = if (desconto != null && desconto!!.percentual > 0) {
+        if (desconto!!.gratuito) 0.0
+        else servicoPreco * (1 - desconto!!.percentual / 100)
+    } else servicoPreco
+
+    // Busca desconto ao carregar a tela
+    LaunchedEffect(Unit) {
+        try {
+            val token = "Bearer ${SessionManager.getToken()}"
+            val response = Api.service.getDesconto(token)
+            if (response.isSuccessful) {
+                desconto = response.body()
+            }
+        } catch (e: Exception) {
+            desconto = null
+        }
+    }
 
     fun validarCartao(): Boolean {
         val apenasNumeros = numeroCartao.filter { it.isDigit() }
@@ -86,18 +107,42 @@ fun PagamentoScreen(
             // Aviso de tela em desenvolvimento
             Box(
                 modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth()
-                    .background(Dourado.copy(alpha = 0.15f), RoundedCornerShape(8.dp))
-                    .padding(12.dp)
+                    .background(Dourado.copy(alpha = 0.15f), RoundedCornerShape(8.dp)).padding(12.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("⚠️", fontSize = 16.sp)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        "Tela em desenvolvimento. O pagamento é simulado para fins de demonstração.",
-                        color = MarromEscuro,
-                        fontSize = 12.sp,
-                        lineHeight = 16.sp
-                    )
+                    Text("Tela em desenvolvimento. O pagamento é simulado para fins de demonstração.", color = MarromEscuro, fontSize = 12.sp, lineHeight = 16.sp)
+                }
+            }
+
+            // Banner de desconto do cartão fidelidade
+            if (desconto != null && desconto!!.percentual > 0) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Box(
+                    modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth()
+                        .background(Dourado, RoundedCornerShape(8.dp)).padding(12.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("🎉", fontSize = 20.sp)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Column {
+                            Text(
+                                desconto!!.mensagem,
+                                color = BrancoQuente,
+                                fontFamily = FrauncesFontFamily,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            if (!desconto!!.gratuito) {
+                                Text(
+                                    "Desconto aplicado automaticamente!",
+                                    color = BrancoQuente.copy(alpha = 0.85f),
+                                    fontSize = 11.sp
+                                )
+                            }
+                        }
+                    }
                 }
             }
 
@@ -118,6 +163,7 @@ fun PagamentoScreen(
                     Text(stringResource(R.string.meus_agendamentos), color = BrancoQuente, fontFamily = FrauncesFontFamily, fontSize = 13.sp)
                 }
             } else {
+                // Resumo do agendamento com desconto
                 Box(modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth().background(BegeClaro, RoundedCornerShape(12.dp)).padding(16.dp)) {
                     Column {
                         Text(stringResource(R.string.resumo_agendamento), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 16.sp)
@@ -126,7 +172,31 @@ fun PagamentoScreen(
                         Text(stringResource(R.string.data_label, dataFormatada), color = MarromMedio, fontSize = 13.sp)
                         Text(stringResource(R.string.duracao_label, servicoDuracao), color = MarromMedio, fontSize = 13.sp)
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(stringResource(R.string.total_label, "%.2f".format(servicoPreco)), color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 16.sp)
+
+                        if (desconto != null && desconto!!.percentual > 0) {
+                            Text(
+                                "Valor original: R$ ${"%.2f".format(servicoPreco)}",
+                                color = MarromMedio,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Normal
+                            )
+                            Text(
+                                "Desconto: -${desconto!!.percentual.toInt()}%",
+                                color = Dourado,
+                                fontFamily = FrauncesFontFamily,
+                                fontSize = 13.sp
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                        }
+
+                        Text(
+                            if (desconto?.gratuito == true) "Total: GRATUITO 🎉"
+                            else stringResource(R.string.total_label, "%.2f".format(precoFinal)),
+                            color = if (desconto?.gratuito == true) Dourado else MarromEscuro,
+                            fontFamily = FrauncesFontFamily,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
 

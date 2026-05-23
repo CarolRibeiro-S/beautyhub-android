@@ -71,6 +71,13 @@ data class AppointmentResponse(
     val client: ClienteApi? = null
 )
 
+data class DescontoResponse(
+    val percentual: Double = 0.0,
+    val mensagem: String = "",
+    val gratuito: Boolean = false,
+    val numeroAgendamento: Int = 0
+)
+
 interface ApiService {
     @POST("auth/login")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
@@ -103,6 +110,11 @@ interface ApiService {
         @Query("serviceId") serviceId: Int,
         @Query("data") data: String
     ): Response<List<String>>
+
+    @GET("appointments/desconto")
+    suspend fun getDesconto(
+        @Header("Authorization") token: String
+    ): Response<DescontoResponse>
 }
 
 object Api {
