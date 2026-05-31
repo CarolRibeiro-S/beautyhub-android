@@ -30,12 +30,14 @@ fun CartaoFidelidadeScreen(
     val nome = SessionManager.getName()?.split(" ")?.firstOrNull()
         ?: (SessionManager.getEmail() ?: "").substringBefore("@").replaceFirstChar { it.uppercase() }
 
+    val desc1 = stringResource(R.string.desc_1_proc)
     val desc3 = stringResource(R.string.desc_3_proc)
     val desc5 = stringResource(R.string.desc_5_proc)
     val desc10 = stringResource(R.string.desc_10_proc)
     val metaAtingida = stringResource(R.string.meta_atingida)
-    val desconto5 = stringResource(R.string.desconto_5_aplicado)
+    val desconto1 = stringResource(R.string.desconto_1_aplicado)
     val desconto3 = stringResource(R.string.desconto_3_aplicado)
+    val desconto5 = stringResource(R.string.desconto_5_aplicado)
     val nenhumDesconto = stringResource(R.string.nenhum_desconto)
 
     LaunchedEffect(Unit) {
@@ -54,16 +56,20 @@ fun CartaoFidelidadeScreen(
         carregando = false
     }
 
+    // Próximo desconto: mostra o que ainda não foi alcançado
     val proximoDesconto = when {
+        totalProcedimentos < 1 -> desc1
         totalProcedimentos < 3 -> desc3
         totalProcedimentos < 5 -> desc5
         totalProcedimentos < 10 -> desc10
         else -> metaAtingida
     }
 
+    // Desconto conquistado: mostra o maior desconto já ativado
     val descontoConquistado = when {
         totalProcedimentos >= 5 -> desconto5
         totalProcedimentos >= 3 -> desconto3
+        totalProcedimentos >= 1 -> desconto1   // ← CORREÇÃO: 1° agendamento conta
         else -> nenhumDesconto
     }
 
@@ -155,7 +161,7 @@ fun CartaoFidelidadeScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 BeneficioCard(titulo = stringResource(R.string.proximo_desconto), texto = proximoDesconto, destaque = true)
                 Spacer(modifier = Modifier.height(12.dp))
-                BeneficioCard(titulo = stringResource(R.string.desconto_conquistado), texto = descontoConquistado, destaque = totalProcedimentos >= 3)
+                BeneficioCard(titulo = stringResource(R.string.desconto_conquistado), texto = descontoConquistado, destaque = totalProcedimentos >= 1)
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Column(

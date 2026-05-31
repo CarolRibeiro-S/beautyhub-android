@@ -156,4 +156,6 @@
     <string name="erro_cartao_validade">Ingresa la fecha en formato MM/AA</string>
     <string name="erro_cartao_cvv">Ingresa el código de seguridad (3 dígitos)</string>
     <string name="erro_horario_ocupado">¡Horario ocupado! Elige otro horario.</string>
+    <string name="desc_1_proc">En el 1er procedimiento — 30% de descuento</string>
+    <string name="desconto_1_aplicado">1er procedimiento — 30% de descuento aplicado</string>
 </resources>

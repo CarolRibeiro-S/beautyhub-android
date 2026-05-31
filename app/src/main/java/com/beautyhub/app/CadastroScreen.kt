@@ -14,20 +14,46 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beautyhub.app.ui.theme.*
 import kotlinx.coroutines.launch
 
-fun formatarDataNascimento(input: String): String {
-    val digits = input.filter { it.isDigit() }.take(8)
-    return buildString {
-        digits.forEachIndexed { i, c ->
-            if (i == 2 || i == 4) append('/')
-            append(c)
+object DataNascimentoTransformation : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        val digitos = text.text
+        val out = StringBuilder()
+        digitos.forEachIndexed { i, c ->
+            if (i == 2 || i == 4) out.append('/')
+            out.append(c)
         }
+
+        val offsetMapping = object : OffsetMapping {
+            override fun originalToTransformed(offset: Int): Int {
+                return when {
+                    offset <= 2 -> offset
+                    offset <= 4 -> offset + 1
+                    else -> offset + 2
+                }
+            }
+            override fun transformedToOriginal(offset: Int): Int {
+                return when {
+                    offset <= 2 -> offset
+                    offset == 3 -> 2
+                    offset <= 5 -> offset - 1
+                    offset == 6 -> 4
+                    else -> offset - 2
+                }
+            }
+        }
+
+        return TransformedText(AnnotatedString(out.toString()), offsetMapping)
     }
 }
 
@@ -40,6 +66,7 @@ fun CadastroScreen(
     var telefone by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
+    // Estado guarda APENAS os 8 dígitos, sem barras
     var dataNascimento by remember { mutableStateOf("") }
     var erro by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
@@ -52,7 +79,8 @@ fun CadastroScreen(
     }
 
     fun dataNascimentoValida(data: String): Boolean {
-        return data.matches(Regex("\\d{2}/\\d{2}/\\d{4}"))
+        // data tem só dígitos no estado, ex: "31052000"
+        return data.length == 8
     }
 
     fun emailValido(email: String): Boolean {
@@ -74,8 +102,6 @@ fun CadastroScreen(
                 fontSize = 22.sp,
                 modifier = Modifier.padding(top = 60.dp)
             )
-
-            // Botão voltar no topo esquerdo do header
             Box(
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -188,10 +214,15 @@ fun CadastroScreen(
 
             OutlinedTextField(
                 value = dataNascimento,
-                onValueChange = { dataNascimento = formatarDataNascimento(it) },
+                onValueChange = { novoValor ->
+                    // Aceita só dígitos puros, máximo 8
+                    // As barras aparecem via VisualTransformation, não no estado
+                    dataNascimento = novoValor.filter { it.isDigit() }.take(8)
+                },
                 label = { Text(stringResource(R.string.data_nascimento)) },
                 singleLine = true,
                 placeholder = { Text("DD/MM/AAAA", color = BegeMedio) },
+                visualTransformation = DataNascimentoTransformation,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MarromEscuro, unfocusedBorderColor = MarromMedio,

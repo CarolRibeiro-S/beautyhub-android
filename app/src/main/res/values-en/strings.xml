@@ -156,4 +156,6 @@
     <string name="erro_cartao_validade">Enter expiry date in MM/YY format</string>
     <string name="erro_cartao_cvv">Enter the security code (3 digits)</string>
     <string name="erro_horario_ocupado">Time slot already taken! Choose another time.</string>
+    <string name="desc_1_proc">On the 1st procedure — 30% discount</string>
+    <string name="desconto_1_aplicado">1st procedure — 30% discount applied</string>
 </resources>

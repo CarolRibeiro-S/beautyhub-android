@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beautyhub.app.ui.theme.*
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
@@ -34,6 +35,7 @@ fun AgendamentoScreen(
     onVoltarClick: () -> Unit = {}
 ) {
     val hoje = remember { LocalDate.now() }
+    val agora = remember { LocalTime.now() }
     val todosHorarios = listOf("09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00")
 
     var diaSelecionado by remember { mutableStateOf<LocalDate?>(null) }
@@ -60,6 +62,15 @@ fun AgendamentoScreen(
         carregandoHorarios = false
     }
 
+    // CORREÇÃO: verifica se horário já passou quando o dia selecionado é hoje
+    fun horarioPassado(horario: String): Boolean {
+        val diaSel = diaSelecionado ?: return false
+        if (diaSel != hoje) return false
+        val partes = horario.split(":")
+        val horaHorario = LocalTime.of(partes[0].toInt(), partes[1].toInt())
+        return horaHorario.isBefore(agora)
+    }
+
     Box(modifier = Modifier.fillMaxSize().background(BrancoQuente)) {
         Box(
             modifier = Modifier.fillMaxWidth().height(220.dp)
@@ -67,11 +78,25 @@ fun AgendamentoScreen(
                 .background(MarromEscuro, RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)),
             contentAlignment = Alignment.TopCenter
         ) {
-            Text(stringResource(R.string.dia_horario), color = BrancoQuente, fontFamily = FrauncesFontFamily, fontSize = 20.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 60.dp, start = 32.dp, end = 32.dp))
+            Text(
+                stringResource(R.string.dia_horario),
+                color = BrancoQuente,
+                fontFamily = FrauncesFontFamily,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 60.dp, start = 32.dp, end = 32.dp)
+            )
         }
 
-        Box(modifier = Modifier.align(Alignment.TopCenter).offset(y = 123.dp).size(150.dp).clip(RoundedCornerShape(75.dp)).background(MarromEscuro)) {
-            Image(painter = painterResource(id = R.drawable.logo_beautyhub), contentDescription = "Logo BeautyHub", modifier = Modifier.fillMaxSize())
+        Box(
+            modifier = Modifier.align(Alignment.TopCenter).offset(y = 123.dp).size(150.dp)
+                .clip(RoundedCornerShape(75.dp)).background(MarromEscuro)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo_beautyhub),
+                contentDescription = "Logo BeautyHub",
+                modifier = Modifier.fillMaxSize()
+            )
         }
 
         Column(
@@ -81,7 +106,10 @@ fun AgendamentoScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             if (servicoNome.isNotEmpty()) {
-                Box(modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth().background(BegeClaro, RoundedCornerShape(12.dp)).padding(12.dp)) {
+                Box(
+                    modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth()
+                        .background(BegeClaro, RoundedCornerShape(12.dp)).padding(12.dp)
+                ) {
                     Column {
                         Text(servicoNome, color = MarromEscuro, fontFamily = FrauncesFontFamily, fontSize = 15.sp)
                         Text("Duração: $servicoDuracao min | R$ ${"%.2f".format(servicoPreco)}", color = MarromMedio, fontSize = 12.sp)
@@ -113,7 +141,8 @@ fun AgendamentoScreen(
                         }
 
                         Text(
-                            mesAtual.month.getDisplayName(TextStyle.FULL, Locale("pt", "BR")).replaceFirstChar { it.uppercase() } + " ${mesAtual.year}",
+                            mesAtual.month.getDisplayName(TextStyle.FULL, Locale("pt", "BR"))
+                                .replaceFirstChar { it.uppercase() } + " ${mesAtual.year}",
                             color = MarromEscuro,
                             fontFamily = FrauncesFontFamily,
                             fontSize = 14.sp
@@ -142,7 +171,6 @@ fun AgendamentoScreen(
                     val primeiroDia = mesAtual.atDay(1)
                     val totalDias = mesAtual.lengthOfMonth()
                     val diaSemanaInicio = primeiroDia.dayOfWeek.value % 7
-
                     val celulas = diaSemanaInicio + totalDias
                     val linhas = (celulas + 6) / 7
 
@@ -200,42 +228,98 @@ fun AgendamentoScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Horários
-            Text("Escolha o horário:", color = MarromMedio, fontFamily = FrauncesFontFamily, fontSize = 13.sp, modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp))
+            Text(
+                "Escolha o horário:",
+                color = MarromMedio,
+                fontFamily = FrauncesFontFamily,
+                fontSize = 13.sp,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp)
+            )
             Spacer(modifier = Modifier.height(8.dp))
 
             if (carregandoHorarios) {
                 CircularProgressIndicator(color = MarromEscuro, modifier = Modifier.size(24.dp))
             } else {
-                Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                // Linha 1 de horários
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     todosHorarios.take(5).forEach { horario ->
                         val selecionado = horarioSelecionado == horario
                         val ocupado = horario in horariosOcupados
+                        // CORREÇÃO: bloqueia horários que já passaram no dia de hoje
+                        val passado = horarioPassado(horario)
+                        val bloqueado = ocupado || passado
+
                         Box(
                             modifier = Modifier
-                                .background(when { ocupado -> BegeMedio.copy(alpha = 0.3f); selecionado -> MarromEscuro; else -> BegeClaro }, RoundedCornerShape(8.dp))
-                                .clickable(enabled = !ocupado && diaSelecionado != null) { horarioSelecionado = horario }
+                                .background(
+                                    when {
+                                        bloqueado -> BegeMedio.copy(alpha = 0.3f)
+                                        selecionado -> MarromEscuro
+                                        else -> BegeClaro
+                                    },
+                                    RoundedCornerShape(8.dp)
+                                )
+                                .clickable(enabled = !bloqueado && diaSelecionado != null) {
+                                    horarioSelecionado = horario
+                                }
                                 .padding(horizontal = 8.dp, vertical = 8.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(horario, color = when { ocupado -> MarromMedio.copy(alpha = 0.3f); selecionado -> BrancoQuente; else -> MarromEscuro }, fontSize = 11.sp)
+                            Text(
+                                horario,
+                                color = when {
+                                    bloqueado -> MarromMedio.copy(alpha = 0.3f)
+                                    selecionado -> BrancoQuente
+                                    else -> MarromEscuro
+                                },
+                                fontSize = 11.sp
+                            )
                         }
                     }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                // Linha 2 de horários
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     todosHorarios.drop(5).forEach { horario ->
                         val selecionado = horarioSelecionado == horario
                         val ocupado = horario in horariosOcupados
+                        // CORREÇÃO: bloqueia horários que já passaram no dia de hoje
+                        val passado = horarioPassado(horario)
+                        val bloqueado = ocupado || passado
+
                         Box(
                             modifier = Modifier
-                                .background(when { ocupado -> BegeMedio.copy(alpha = 0.3f); selecionado -> MarromEscuro; else -> BegeClaro }, RoundedCornerShape(8.dp))
-                                .clickable(enabled = !ocupado && diaSelecionado != null) { horarioSelecionado = horario }
+                                .background(
+                                    when {
+                                        bloqueado -> BegeMedio.copy(alpha = 0.3f)
+                                        selecionado -> MarromEscuro
+                                        else -> BegeClaro
+                                    },
+                                    RoundedCornerShape(8.dp)
+                                )
+                                .clickable(enabled = !bloqueado && diaSelecionado != null) {
+                                    horarioSelecionado = horario
+                                }
                                 .padding(horizontal = 8.dp, vertical = 8.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(horario, color = when { ocupado -> MarromMedio.copy(alpha = 0.3f); selecionado -> BrancoQuente; else -> MarromEscuro }, fontSize = 11.sp)
+                            Text(
+                                horario,
+                                color = when {
+                                    bloqueado -> MarromMedio.copy(alpha = 0.3f)
+                                    selecionado -> BrancoQuente
+                                    else -> MarromEscuro
+                                },
+                                fontSize = 11.sp
+                            )
                         }
                     }
                 }
@@ -243,7 +327,13 @@ fun AgendamentoScreen(
 
             if (erro.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(erro, color = Vermelho, fontSize = 12.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 32.dp))
+                Text(
+                    erro,
+                    color = Vermelho,
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -263,7 +353,12 @@ fun AgendamentoScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = MarromEscuro),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text(stringResource(R.string.confirmar_agendamento), color = BrancoQuente, fontFamily = FrauncesFontFamily, fontSize = 14.sp)
+                Text(
+                    stringResource(R.string.confirmar_agendamento),
+                    color = BrancoQuente,
+                    fontFamily = FrauncesFontFamily,
+                    fontSize = 14.sp
+                )
             }
 
             Spacer(modifier = Modifier.height(12.dp))
